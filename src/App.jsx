@@ -28,7 +28,6 @@ function Reveal({ children, className = '' }) {
 
   useEffect(() => {
     const element = ref.current
-
     if (!element) return
 
     if (!('IntersectionObserver' in window)) {
@@ -149,195 +148,24 @@ function useCountdown(targetDate, targetTime) {
 }
 
 // ======================================================
-// OPENING GATE
-// ======================================================
-
-function OpeningGate({ settings, onOpen }) {
-  const [opening, setOpening] = useState(false)
-
-  const groomInitial =
-    settings?.groom_name?.trim()?.[0] || ''
-
-  const brideInitial =
-    settings?.bride_name?.trim()?.[0] || ''
-
-  const initials =
-    settings?.initials ||
-    `${groomInitial} & ${brideInitial}`
-
-  const openGate = () => {
-    if (opening) return
-
-    setOpening(true)
-
-    // نعطيو للباب الوقت باش يكمل animation
-    setTimeout(() => {
-      onOpen()
-    }, 1500)
-  }
-
-  return (
-    <div
-      className={`opening-gate ${
-        opening ? 'opening-gate-open' : ''
-      }`}
-      onClick={openGate}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(event) => {
-        if (event.key === 'Enter' || event.key === ' ') {
-          event.preventDefault()
-          openGate()
-        }
-      }}
-      aria-label="Ouvrir l'invitation"
-    >
-
-      {/* الضوء اللي جاي من ورا الباب */}
-      <div className="gate-light" />
-
-      {/* هالة ذهبية */}
-      <div className="gate-glow" />
-
-      {/* ==================================================
-          LEFT DOOR
-          ================================================== */}
-
-      <div className="gate-door gate-door-left">
-
-        <div className="gate-arch" />
-
-        <div className="gate-panel">
-
-          <div className="gate-zellige gate-zellige-top">
-            <ZelligeMark />
-            <ZelligeMark />
-            <ZelligeMark />
-          </div>
-
-          <div className="gate-decoration">
-
-            <span className="diamond diamond-1" />
-            <span className="diamond diamond-2" />
-            <span className="diamond diamond-3" />
-
-            <div className="gate-star">
-              <ZelligeMark />
-            </div>
-
-          </div>
-
-          <div className="gate-border" />
-
-        </div>
-      </div>
-
-      {/* ==================================================
-          RIGHT DOOR
-          ================================================== */}
-
-      <div className="gate-door gate-door-right">
-
-        <div className="gate-arch" />
-
-        <div className="gate-panel">
-
-          <div className="gate-zellige gate-zellige-top">
-            <ZelligeMark />
-            <ZelligeMark />
-            <ZelligeMark />
-          </div>
-
-          <div className="gate-decoration">
-
-            <span className="diamond diamond-1" />
-            <span className="diamond diamond-2" />
-            <span className="diamond diamond-3" />
-
-            <div className="gate-star">
-              <ZelligeMark />
-            </div>
-
-          </div>
-
-          <div className="gate-border" />
-
-        </div>
-      </div>
-
-      {/* ==================================================
-          CONTENT AU CENTRE DU PORTAIL
-          ================================================== */}
-
-      <div className="gate-content">
-
-        <div className="gate-eyebrow">
-          Une invitation
-        </div>
-
-        <div className="gate-monogram">
-          {initials}
-        </div>
-
-        <div className="gate-names">
-          <span>{settings?.groom_name}</span>
-          <i>&</i>
-          <span>{settings?.bride_name}</span>
-        </div>
-
-        {settings?.wedding_date && (
-          <div className="gate-date">
-            {formatDate(settings.wedding_date)}
-          </div>
-        )}
-
-        <div className="gate-open-hint">
-          <span className="gate-hint-line" />
-          <span>Toucher pour ouvrir</span>
-          <span className="gate-hint-line" />
-        </div>
-
-      </div>
-
-      {/* زخارف أمامية */}
-      <div className="gate-corner gate-corner-tl">
-        <ZelligeMark />
-      </div>
-
-      <div className="gate-corner gate-corner-tr">
-        <ZelligeMark />
-      </div>
-
-      <div className="gate-corner gate-corner-bl">
-        <ZelligeMark />
-      </div>
-
-      <div className="gate-corner gate-corner-br">
-        <ZelligeMark />
-      </div>
-
-    </div>
-  )
-}
-
-// ======================================================
-// APP
+// MAIN APP
 // ======================================================
 
 export default function App() {
-
   const [settings, setSettings] = useState(null)
   const [schedule, setSchedule] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
-  // الباب يكون ظاهر في البداية
-  const [gateOpened, setGateOpened] = useState(false)
+  // الباب
+  const [gateOpen, setGateOpen] = useState(false)
+
+  // ====================================================
+  // LOAD DATA
+  // ====================================================
 
   useEffect(() => {
-
     async function load() {
-
       const {
         data: settingsData,
         error: settingsError,
@@ -354,7 +182,6 @@ export default function App() {
       }
 
       if (settingsData) {
-
         const {
           data: scheduleData,
         } = await supabase
@@ -373,7 +200,6 @@ export default function App() {
     }
 
     load()
-
   }, [])
 
   const countdown = useCountdown(
@@ -381,9 +207,24 @@ export default function App() {
     settings?.wedding_time
   )
 
-  // ======================================================
+  // ====================================================
+  // OPEN GATE
+  // ====================================================
+
+  const openGate = () => {
+    setGateOpen(true)
+
+    // نخلي scroll مقفول أثناء animation
+    document.body.classList.add('gate-opening')
+
+    setTimeout(() => {
+      document.body.classList.remove('gate-opening')
+    }, 1800)
+  }
+
+  // ====================================================
   // LOADING
-  // ======================================================
+  // ====================================================
 
   if (loading) {
     return (
@@ -393,9 +234,9 @@ export default function App() {
     )
   }
 
-  // ======================================================
+  // ====================================================
   // ERROR
-  // ======================================================
+  // ====================================================
 
   if (error) {
     return (
@@ -407,9 +248,9 @@ export default function App() {
     )
   }
 
-  // ======================================================
+  // ====================================================
   // NO WEDDING
-  // ======================================================
+  // ====================================================
 
   if (!settings) {
     return (
@@ -421,314 +262,414 @@ export default function App() {
   }
 
   return (
-    <>
-      {/* ==================================================
-          OPENING GATE
-          ================================================== */}
-
-      {!gateOpened && (
-        <OpeningGate
-          settings={settings}
-          onOpen={() => setGateOpened(true)}
-        />
-      )}
+    <div className="page">
 
       {/* ==================================================
-          INVITATION
+          GRAND PORTAIL
           ================================================== */}
 
       <div
-        className={`page ${
-          gateOpened ? 'invitation-visible' : 'invitation-hidden'
+        className={`wedding-gate ${
+          gateOpen ? 'gate-is-open' : ''
         }`}
       >
 
-        {/* ==================================================
-            HERO
-            ================================================== */}
+        {/* الخلفية */}
+        <div className="gate-background">
+          <div className="gate-glow" />
+        </div>
 
-        <section className="hero">
+        {/* الباب اليسر */}
+        <div className="gate-door gate-left">
 
-          <div className="eyebrow">
-            Nous nous marions
+          <div className="gate-pattern" />
+
+          <div className="gate-arch" />
+
+          <div className="gate-decoration top">
+            <ZelligeMark />
           </div>
 
-          <p className="initials">
+          <div className="gate-decoration bottom">
+            <ZelligeMark />
+          </div>
+
+          <div className="gate-name">
+            {settings.groom_name?.[0] || '✦'}
+          </div>
+
+        </div>
+
+        {/* الباب الأيمن */}
+        <div className="gate-door gate-right">
+
+          <div className="gate-pattern" />
+
+          <div className="gate-arch" />
+
+          <div className="gate-decoration top">
+            <ZelligeMark />
+          </div>
+
+          <div className="gate-decoration bottom">
+            <ZelligeMark />
+          </div>
+
+          <div className="gate-name">
+            {settings.bride_name?.[0] || '✦'}
+          </div>
+
+        </div>
+
+        {/* المحتوى فوق الباب */}
+        <div className="gate-content">
+
+          <div className="gate-small">
+            Invitation de mariage
+          </div>
+
+          <div className="gate-initials">
             {settings.initials ||
               `${settings.groom_name?.[0] || ''} & ${settings.bride_name?.[0] || ''}`}
+          </div>
+
+          <div className="gate-names">
+            {settings.groom_name}
+            <span>&amp;</span>
+            {settings.bride_name}
+          </div>
+
+          <div className="gate-date">
+            {formatDate(settings.wedding_date)}
+          </div>
+
+          <button
+            type="button"
+            className="gate-open-button"
+            onClick={openGate}
+            aria-label="Ouvrir l'invitation"
+          >
+            <span className="button-icon">
+              <ZelligeMark />
+            </span>
+
+            <span>
+              Ouvrir l'invitation
+            </span>
+
+            <span className="button-arrow">
+              ↓
+            </span>
+          </button>
+
+          <div className="gate-hint">
+            Touchez pour entrer
+          </div>
+
+        </div>
+
+        {/* lumière أثناء الفتح */}
+        <div className="gate-light" />
+
+      </div>
+
+      {/* ==================================================
+          HERO
+          ================================================== */}
+
+      <section className="hero">
+
+        <div className="eyebrow">
+          Nous nous marions
+        </div>
+
+        <p className="initials">
+          {settings.initials ||
+            `${settings.groom_name?.[0] || ''} & ${settings.bride_name?.[0] || ''}`}
+        </p>
+
+        <p className="names">
+          {settings.groom_name} &amp; {settings.bride_name}
+        </p>
+
+        {settings.wedding_quote && (
+          <p className="quote">
+            {settings.wedding_quote}
           </p>
-
-          <p className="names">
-            {settings.groom_name} &amp; {settings.bride_name}
-          </p>
-
-          {settings.wedding_quote && (
-            <p className="quote">
-              {settings.wedding_quote}
-            </p>
-          )}
-
-          {settings.wedding_date && (
-            <div className="date-pill">
-              {formatDate(settings.wedding_date)}
-            </div>
-          )}
-
-          {countdown && (
-            <div className="countdown">
-
-              <div className="unit">
-                <div className="value">
-                  {countdown.days}
-                </div>
-                <div className="label">
-                  jours
-                </div>
-              </div>
-
-              <div className="unit">
-                <div className="value">
-                  {countdown.hours}
-                </div>
-                <div className="label">
-                  heures
-                </div>
-              </div>
-
-              <div className="unit">
-                <div className="value">
-                  {countdown.minutes}
-                </div>
-                <div className="label">
-                  minutes
-                </div>
-              </div>
-
-            </div>
-          )}
-
-        </section>
-
-        <Divider />
-
-        {/* ==================================================
-            MESSAGE
-            ================================================== */}
-
-        {(settings.invitation_message ||
-          settings.couple_description) && (
-
-          <Reveal>
-
-            <section className="section">
-
-              <p
-                className="quote"
-                style={{
-                  margin: '0 auto',
-                  maxWidth: 480,
-                }}
-              >
-                {settings.invitation_message ||
-                  settings.couple_description}
-              </p>
-
-            </section>
-
-          </Reveal>
         )}
 
-        <Divider />
+        {settings.wedding_date && (
+          <div className="date-pill">
+            {formatDate(settings.wedding_date)}
+          </div>
+        )}
 
-        {/* ==================================================
-            DÉTAILS
-            ================================================== */}
+        {countdown && (
+          <div className="countdown">
+
+            <div className="unit">
+              <div className="value">
+                {countdown.days}
+              </div>
+
+              <div className="label">
+                jours
+              </div>
+            </div>
+
+            <div className="unit">
+              <div className="value">
+                {countdown.hours}
+              </div>
+
+              <div className="label">
+                heures
+              </div>
+            </div>
+
+            <div className="unit">
+              <div className="value">
+                {countdown.minutes}
+              </div>
+
+              <div className="label">
+                minutes
+              </div>
+            </div>
+
+          </div>
+        )}
+
+      </section>
+
+      <Divider />
+
+      {/* ==================================================
+          MESSAGE
+          ================================================== */}
+
+      {(settings.invitation_message ||
+        settings.couple_description) && (
 
         <Reveal>
 
           <section className="section">
 
-            <h2 className="heading">
-              Le grand jour
-            </h2>
-
-            <p className="subheading">
-              Retrouvez-nous pour célébrer ensemble
+            <p
+              className="quote"
+              style={{
+                margin: '0 auto',
+                maxWidth: 480,
+              }}
+            >
+              {settings.invitation_message ||
+                settings.couple_description}
             </p>
 
-            <div className="details-grid">
+          </section>
 
-              {/* DATE */}
+        </Reveal>
+      )}
 
-              <div className="detail-card">
+      <Divider />
 
-                <div className="label">
-                  Date &amp; heure
-                </div>
+      {/* ==================================================
+          DÉTAILS
+          ================================================== */}
 
-                <div className="value">
-                  {formatDate(settings.wedding_date)}
-                </div>
+      <Reveal>
 
-                {settings.wedding_time && (
-                  <div className="sub">
-                    à {formatTime(settings.wedding_time)}
-                  </div>
-                )}
+        <section className="section">
 
+          <h2 className="heading">
+            Le grand jour
+          </h2>
+
+          <p className="subheading">
+            Retrouvez-nous pour célébrer ensemble
+          </p>
+
+          <div className="details-grid">
+
+            {/* DATE */}
+
+            <div className="detail-card">
+
+              <div className="label">
+                Date &amp; heure
               </div>
 
-              {/* LIEU */}
+              <div className="value">
+                {formatDate(settings.wedding_date)}
+              </div>
 
-              {settings.venue_name && (
-                <div className="detail-card">
-
-                  <div className="label">
-                    Lieu
-                  </div>
-
-                  <div className="value">
-                    {settings.venue_name}
-                  </div>
-
-                  {(settings.address ||
-                    settings.city) && (
-
-                    <div className="sub">
-
-                      {[
-                        settings.address,
-                        settings.city,
-                        settings.country,
-                      ]
-                        .filter(Boolean)
-                        .join(', ')}
-
-                    </div>
-                  )}
-
-                  {settings.maps_url && (
-                    <a
-                      className="maps-link"
-                      href={settings.maps_url}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      Voir sur la carte
-                    </a>
-                  )}
-
-                </div>
-              )}
-
-              {/* DRESS CODE */}
-
-              {settings.dress_code && (
-                <div className="detail-card">
-
-                  <div className="label">
-                    Dress code
-                  </div>
-
-                  <div className="value">
-                    {settings.dress_code}
-                  </div>
-
+              {settings.wedding_time && (
+                <div className="sub">
+                  à {formatTime(settings.wedding_time)}
                 </div>
               )}
 
             </div>
 
-          </section>
+            {/* LIEU */}
 
-        </Reveal>
+            {settings.venue_name && (
 
-        {/* ==================================================
-            PROGRAMME
-            ================================================== */}
+              <div className="detail-card">
 
-        {schedule.length > 0 && (
-          <>
-            <Divider />
+                <div className="label">
+                  Lieu
+                </div>
 
-            <Reveal>
+                <div className="value">
+                  {settings.venue_name}
+                </div>
 
-              <section className="section">
+                {(settings.address ||
+                  settings.city) && (
 
-                <h2 className="heading">
-                  Le déroulé
-                </h2>
+                  <div className="sub">
 
-                <p className="subheading">
-                  Une journée à vivre ensemble
-                </p>
+                    {[
+                      settings.address,
+                      settings.city,
+                      settings.country,
+                    ]
+                      .filter(Boolean)
+                      .join(', ')}
 
-                <div className="timeline">
+                  </div>
+                )}
 
-                  {schedule.map((item) => (
+                {settings.maps_url && (
 
-                    <div
-                      className="timeline-item"
-                      key={item.id}
-                    >
+                  <a
+                    className="maps-link"
+                    href={settings.maps_url}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Voir sur la carte
+                  </a>
 
-                      <div className="time">
-                        {formatTime(item.time)}
-                      </div>
+                )}
 
-                      <div className="rail" />
+              </div>
+            )}
 
-                      <div>
+            {/* DRESS CODE */}
 
-                        <p className="title">
-                          {item.title}
+            {settings.dress_code && (
+
+              <div className="detail-card">
+
+                <div className="label">
+                  Dress code
+                </div>
+
+                <div className="value">
+                  {settings.dress_code}
+                </div>
+
+              </div>
+
+            )}
+
+          </div>
+
+        </section>
+
+      </Reveal>
+
+      {/* ==================================================
+          PROGRAMME
+          ================================================== */}
+
+      {schedule.length > 0 && (
+
+        <>
+          <Divider />
+
+          <Reveal>
+
+            <section className="section">
+
+              <h2 className="heading">
+                Le déroulé
+              </h2>
+
+              <p className="subheading">
+                Une journée à vivre ensemble
+              </p>
+
+              <div className="timeline">
+
+                {schedule.map((item) => (
+
+                  <div
+                    className="timeline-item"
+                    key={item.id}
+                  >
+
+                    <div className="time">
+                      {formatTime(item.time)}
+                    </div>
+
+                    <div className="rail" />
+
+                    <div>
+
+                      <p className="title">
+                        {item.title}
+                      </p>
+
+                      {item.description && (
+
+                        <p className="desc">
+                          {item.description}
                         </p>
 
-                        {item.description && (
-                          <p className="desc">
-                            {item.description}
-                          </p>
-                        )}
-
-                      </div>
+                      )}
 
                     </div>
 
-                  ))}
+                  </div>
 
-                </div>
+                ))}
 
-              </section>
+              </div>
 
-            </Reveal>
-          </>
-        )}
+            </section>
 
-        <Divider />
+          </Reveal>
+        </>
 
-        {/* ==================================================
-            FOOTER
-            ================================================== */}
+      )}
 
-        <Reveal>
+      <Divider />
 
-          <footer className="footer">
+      {/* ==================================================
+          FOOTER
+          ================================================== */}
 
-            <p className="signoff">
-              {settings.final_message ||
-                'Avec amour, à très bientôt.'}
-            </p>
+      <Reveal>
 
-            <p className="small">
-              {settings.footer_text ||
-                `${settings.groom_name} & ${settings.bride_name}`}
-            </p>
+        <footer className="footer">
 
-          </footer>
+          <p className="signoff">
+            {settings.final_message ||
+              'Avec amour, à très bientôt.'}
+          </p>
 
-        </Reveal>
+          <p className="small">
+            {settings.footer_text ||
+              `${settings.groom_name} & ${settings.bride_name}`}
+          </p>
 
-      </div>
-    </>
+        </footer>
+
+      </Reveal>
+
+    </div>
   )
 }
