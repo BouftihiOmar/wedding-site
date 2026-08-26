@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { supabase } from './supabaseClient'
 
 const MONTHS_FR = [
@@ -17,10 +17,65 @@ function formatTime(timeStr) {
   return timeStr.slice(0, 5)
 }
 
-// Motif signature : étoile à huit branches (khatam), inspirée du zellige marocain
+// --------------------------------------------------
+// Scroll reveal
+// Compatible avec Android, iPhone, PC et anciens
+// navigateurs grâce au fallback.
+// --------------------------------------------------
+function Reveal({ children, className = '' }) {
+  const [visible, setVisible] = useState(false)
+  const ref = useRef(null)
+
+  useEffect(() => {
+    const element = ref.current
+
+    if (!element) return
+
+    // Fallback si IntersectionObserver n'est pas disponible
+    if (!('IntersectionObserver' in window)) {
+      setVisible(true)
+      return
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true)
+          observer.unobserve(element)
+        }
+      },
+      {
+        threshold: 0.12,
+        rootMargin: '0px 0px -40px 0px',
+      }
+    )
+
+    observer.observe(element)
+
+    return () => observer.disconnect()
+  }, [])
+
+  return (
+    <div
+      ref={ref}
+      className={`reveal ${visible ? 'reveal-visible' : ''} ${className}`}
+    >
+      {children}
+    </div>
+  )
+}
+
+// --------------------------------------------------
+// Motif marocain : étoile à huit branches
+// --------------------------------------------------
 function ZelligeMark() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
       <path
         d="M12 2 L14.2 9.8 L22 12 L14.2 14.2 L12 22 L9.8 14.2 L2 12 L9.8 9.8 Z"
         stroke="currentColor"
@@ -41,34 +96,63 @@ function Divider() {
   )
 }
 
+// --------------------------------------------------
+// Countdown
+// --------------------------------------------------
 function useCountdown(targetDate, targetTime) {
   const [left, setLeft] = useState(null)
 
   useEffect(() => {
-    if (!targetDate) return
-    const target = new Date(`${targetDate}T${targetTime || '00:00:00'}`)
+    if (!targetDate) {
+      setLeft(null)
+      return
+    }
+
+    const target = new Date(
+      `${targetDate}T${targetTime || '00:00:00'}`
+    )
 
     const tick = () => {
       const diff = target.getTime() - Date.now()
+
       if (diff <= 0) {
-        setLeft({ days: 0, hours: 0, minutes: 0 })
+        setLeft({
+          days: 0,
+          hours: 0,
+          minutes: 0,
+        })
         return
       }
+
       setLeft({
-        days: Math.floor(diff / (1000 * 60 * 60 * 24)),
-        hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
-        minutes: Math.floor((diff / (1000 * 60)) % 60),
+        days: Math.floor(
+          diff / (1000 * 60 * 60 * 24)
+        ),
+        hours: Math.floor(
+          (diff / (1000 * 60 * 60)) % 24
+        ),
+        minutes: Math.floor(
+          (diff / (1000 * 60)) % 60
+        ),
       })
     }
 
     tick()
-    const id = setInterval(tick, 60 * 1000)
+
+    const id = setInterval(
+      tick,
+      60 * 1000
+    )
+
     return () => clearInterval(id)
   }, [targetDate, targetTime])
 
   return left
 }
 
+// --------------------------------------------------
+// APP
+// --------------------------------------------------
 export default function App() {
   const [settings, setSettings] = useState(null)
   const [schedule, setSchedule] = useState([])
@@ -77,7 +161,10 @@ export default function App() {
 
   useEffect(() => {
     async function load() {
-      const { data: settingsData, error: settingsError } = await supabase
+      const {
+        data: settingsData,
+        error: settingsError,
+      } = await supabase
         .from('wedding_settings')
         .select('*')
         .limit(1)
@@ -90,11 +177,15 @@ export default function App() {
       }
 
       if (settingsData) {
-        const { data: scheduleData } = await supabase
+        const {
+          data: scheduleData,
+        } = await supabase
           .from('wedding_schedule')
           .select('*')
           .eq('wedding_id', settingsData.id)
-          .order('order_index', { ascending: true })
+          .order('order_index', {
+            ascending: true,
+          })
 
         setSchedule(scheduleData || [])
       }
@@ -106,12 +197,25 @@ export default function App() {
     load()
   }, [])
 
-  const countdown = useCountdown(settings?.wedding_date, settings?.wedding_time)
+  const countdown = useCountdown(
+    settings?.wedding_date,
+    settings?.wedding_time
+  )
 
+  // --------------------------------------------------
+  // Loading
+  // --------------------------------------------------
   if (loading) {
-    return <div className="loading">Un instant, l'invitation se prépare&nbsp;…</div>
+    return (
+      <div className="loading">
+        Un instant, l'invitation se prépare&nbsp;…
+      </div>
+    )
   }
 
+  // --------------------------------------------------
+  // Error
+  // --------------------------------------------------
   if (error) {
     return (
       <div className="empty-state">
@@ -122,132 +226,296 @@ export default function App() {
     )
   }
 
+  // --------------------------------------------------
+  // No wedding
+  // --------------------------------------------------
   if (!settings) {
     return (
       <div className="empty-state">
-        Aucune information de mariage trouvée pour le moment.
+        Aucune information de mariage trouvée
+        pour le moment.
       </div>
     )
   }
 
   return (
     <div className="page">
-      {/* HERO */}
+
+      {/* ==================================================
+          HERO
+          ================================================== */}
       <section className="hero">
-        <div className="eyebrow">Nous nous marions</div>
-        <p className="initials">{settings.initials || `${settings.groom_name?.[0] || ''} & ${settings.bride_name?.[0] || ''}`}</p>
+
+        <div className="eyebrow">
+          Nous nous marions
+        </div>
+
+        <p className="initials">
+          {settings.initials ||
+            `${settings.groom_name?.[0] || ''} & ${settings.bride_name?.[0] || ''}`}
+        </p>
+
         <p className="names">
           {settings.groom_name} &amp; {settings.bride_name}
         </p>
 
-        {settings.wedding_quote && <p className="quote">{settings.wedding_quote}</p>}
+        {settings.wedding_quote && (
+          <p className="quote">
+            {settings.wedding_quote}
+          </p>
+        )}
 
         {settings.wedding_date && (
-          <div className="date-pill">{formatDate(settings.wedding_date)}</div>
+          <div className="date-pill">
+            {formatDate(settings.wedding_date)}
+          </div>
         )}
 
         {countdown && (
           <div className="countdown">
+
             <div className="unit">
-              <div className="value">{countdown.days}</div>
-              <div className="label">jours</div>
+              <div className="value">
+                {countdown.days}
+              </div>
+              <div className="label">
+                jours
+              </div>
             </div>
+
             <div className="unit">
-              <div className="value">{countdown.hours}</div>
-              <div className="label">heures</div>
+              <div className="value">
+                {countdown.hours}
+              </div>
+              <div className="label">
+                heures
+              </div>
             </div>
+
             <div className="unit">
-              <div className="value">{countdown.minutes}</div>
-              <div className="label">minutes</div>
+              <div className="value">
+                {countdown.minutes}
+              </div>
+              <div className="label">
+                minutes
+              </div>
             </div>
+
           </div>
         )}
+
       </section>
 
       <Divider />
 
-      {/* MESSAGE */}
-      {(settings.invitation_message || settings.couple_description) && (
-        <section className="section">
-          <p className="quote" style={{ margin: '0 auto', maxWidth: 480 }}>
-            {settings.invitation_message || settings.couple_description}
-          </p>
-        </section>
+      {/* ==================================================
+          MESSAGE
+          ================================================== */}
+      {(settings.invitation_message ||
+        settings.couple_description) && (
+
+        <Reveal>
+
+          <section className="section">
+
+            <p
+              className="quote"
+              style={{
+                margin: '0 auto',
+                maxWidth: 480,
+              }}
+            >
+              {settings.invitation_message ||
+                settings.couple_description}
+            </p>
+
+          </section>
+
+        </Reveal>
       )}
 
       <Divider />
 
-      {/* DÉTAILS */}
-      <section className="section">
-        <h2 className="heading">Le grand jour</h2>
-        <p className="subheading">Retrouvez-nous pour célébrer ensemble</p>
+      {/* ==================================================
+          DÉTAILS
+          ================================================== */}
+      <Reveal>
 
-        <div className="details-grid">
-          <div className="detail-card">
-            <div className="label">Date &amp; heure</div>
-            <div className="value">{formatDate(settings.wedding_date)}</div>
-            {settings.wedding_time && (
-              <div className="sub">à {formatTime(settings.wedding_time)}</div>
-            )}
-          </div>
+        <section className="section">
 
-          {settings.venue_name && (
+          <h2 className="heading">
+            Le grand jour
+          </h2>
+
+          <p className="subheading">
+            Retrouvez-nous pour célébrer ensemble
+          </p>
+
+          <div className="details-grid">
+
+            {/* DATE */}
             <div className="detail-card">
-              <div className="label">Lieu</div>
-              <div className="value">{settings.venue_name}</div>
-              {(settings.address || settings.city) && (
+
+              <div className="label">
+                Date &amp; heure
+              </div>
+
+              <div className="value">
+                {formatDate(settings.wedding_date)}
+              </div>
+
+              {settings.wedding_time && (
                 <div className="sub">
-                  {[settings.address, settings.city, settings.country].filter(Boolean).join(', ')}
+                  à {formatTime(settings.wedding_time)}
                 </div>
               )}
-              {settings.maps_url && (
-                <a className="maps-link" href={settings.maps_url} target="_blank" rel="noreferrer">
-                  Voir sur la carte
-                </a>
-              )}
-            </div>
-          )}
 
-          {settings.dress_code && (
-            <div className="detail-card">
-              <div className="label">Dress code</div>
-              <div className="value">{settings.dress_code}</div>
             </div>
-          )}
-        </div>
-      </section>
 
-      {/* PROGRAMME */}
+            {/* LIEU */}
+            {settings.venue_name && (
+              <div className="detail-card">
+
+                <div className="label">
+                  Lieu
+                </div>
+
+                <div className="value">
+                  {settings.venue_name}
+                </div>
+
+                {(settings.address ||
+                  settings.city) && (
+
+                  <div className="sub">
+                    {[
+                      settings.address,
+                      settings.city,
+                      settings.country,
+                    ]
+                      .filter(Boolean)
+                      .join(', ')}
+                  </div>
+                )}
+
+                {settings.maps_url && (
+                  <a
+                    className="maps-link"
+                    href={settings.maps_url}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Voir sur la carte
+                  </a>
+                )}
+
+              </div>
+            )}
+
+            {/* DRESS CODE */}
+            {settings.dress_code && (
+              <div className="detail-card">
+
+                <div className="label">
+                  Dress code
+                </div>
+
+                <div className="value">
+                  {settings.dress_code}
+                </div>
+
+              </div>
+            )}
+
+          </div>
+
+        </section>
+
+      </Reveal>
+
+      {/* ==================================================
+          PROGRAMME
+          ================================================== */}
       {schedule.length > 0 && (
         <>
           <Divider />
-          <section className="section">
-            <h2 className="heading">Le déroulé</h2>
-            <p className="subheading">Une journée à vivre ensemble</p>
 
-            <div className="timeline">
-              {schedule.map((item) => (
-                <div className="timeline-item" key={item.id}>
-                  <div className="time">{formatTime(item.time)}</div>
-                  <div className="rail" />
-                  <div>
-                    <p className="title">{item.title}</p>
-                    {item.description && <p className="desc">{item.description}</p>}
+          <Reveal>
+
+            <section className="section">
+
+              <h2 className="heading">
+                Le déroulé
+              </h2>
+
+              <p className="subheading">
+                Une journée à vivre ensemble
+              </p>
+
+              <div className="timeline">
+
+                {schedule.map((item) => (
+
+                  <div
+                    className="timeline-item"
+                    key={item.id}
+                  >
+
+                    <div className="time">
+                      {formatTime(item.time)}
+                    </div>
+
+                    <div className="rail" />
+
+                    <div>
+
+                      <p className="title">
+                        {item.title}
+                      </p>
+
+                      {item.description && (
+                        <p className="desc">
+                          {item.description}
+                        </p>
+                      )}
+
+                    </div>
+
                   </div>
-                </div>
-              ))}
-            </div>
-          </section>
+
+                ))}
+
+              </div>
+
+            </section>
+
+          </Reveal>
         </>
       )}
 
       <Divider />
 
-      {/* FOOTER */}
-      <footer className="footer">
-        <p className="signoff">{settings.final_message || 'Avec amour, à très bientôt.'}</p>
-        <p className="small">{settings.footer_text || `${settings.groom_name} & ${settings.bride_name}`}</p>
-      </footer>
+      {/* ==================================================
+          FOOTER
+          ================================================== */}
+      <Reveal>
+
+        <footer className="footer">
+
+          <p className="signoff">
+            {settings.final_message ||
+              'Avec amour, à très bientôt.'}
+          </p>
+
+          <p className="small">
+            {settings.footer_text ||
+              `${settings.groom_name} & ${settings.bride_name}`}
+          </p>
+
+        </footer>
+
+      </Reveal>
+
     </div>
   )
 }
