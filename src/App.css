@@ -1,13 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500&family=Marcellus&display=swap');
-
 :root {
   --color-bg: #fbf6ee;
-  --color-bg-deep: #eadbc2;
+  --color-bg-deep: #f0e4d0;
   --color-ink: #29251f;
   --color-ink-soft: #71675a;
   --color-gold: #b8935a;
   --color-gold-soft: #d8bd8f;
-  --color-gold-light: #ead9bc;
   --color-emerald: #1f3d2b;
   --color-clay: #8b4a3d;
 
@@ -22,7 +19,6 @@
 
 html {
   scroll-behavior: smooth;
-  background: var(--color-bg);
 }
 
 body {
@@ -32,7 +28,6 @@ body {
   font-family: var(--font-body);
   font-weight: 300;
   letter-spacing: 0.01em;
-  -webkit-font-smoothing: antialiased;
 }
 
 body,
@@ -41,262 +36,410 @@ a {
   -webkit-tap-highlight-color: transparent;
 }
 
-button,
-a {
-  font-family: inherit;
+button {
+  font: inherit;
 }
 
 .page {
-  width: 100%;
   max-width: 720px;
-  min-height: 100vh;
   margin: 0 auto;
   overflow: hidden;
   position: relative;
   background: var(--color-bg);
 }
 
+
 /* =========================================================
+   =========================================================
    ROYAL MOROCCAN GATE
+   =========================================================
    ========================================================= */
 
 .royal-gate {
   position: fixed;
   inset: 0;
   z-index: 9999;
+
+  width: 100%;
+  height: 100svh;
+
   overflow: hidden;
-  pointer-events: none;
+
+  background:
+    radial-gradient(
+      circle at 50% 45%,
+      rgba(184, 147, 90, 0.18),
+      transparent 35%
+    ),
+    linear-gradient(
+      135deg,
+      #10261b,
+      #1f3d2b 45%,
+      #10261b
+    );
+
+  transition:
+    visibility 0s linear 2.4s,
+    opacity 1s ease;
+}
+
+
+/* =========================================================
+   BACKGROUND BEHIND THE DOORS
+   ========================================================= */
+
+.gate-background {
+  position: absolute;
+  inset: 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+
+  overflow: hidden;
 
   background:
     radial-gradient(
       ellipse at center,
-      rgba(184, 147, 90, 0.14) 0%,
-      rgba(40, 28, 18, 0.35) 28%,
-      #100d0a 75%
+      rgba(238, 215, 172, 0.22),
+      transparent 35%
+    ),
+    radial-gradient(
+      circle at 20% 80%,
+      rgba(184, 147, 90, 0.14),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 80% 20%,
+      rgba(184, 147, 90, 0.12),
+      transparent 30%
     );
-
-  perspective: 1600px;
-
-  animation:
-    gateDisappear 0.9s ease 3.35s forwards;
 }
 
-/* ---------------------------------------------------------
-   LIGHT BEHIND THE DOOR
-   --------------------------------------------------------- */
 
-.gate-glow {
+/* =========================================================
+   SMALL FLOATING STARS
+   ========================================================= */
+
+.gate-background::before,
+.gate-background::after {
+  content: '✦';
+
   position: absolute;
-  inset: 0;
-  z-index: 0;
+
+  color: rgba(234, 217, 188, 0.5);
+
+  font-size: 14px;
+
+  animation:
+    gateStarFloat 4s ease-in-out infinite;
+}
+
+.gate-background::before {
+  left: 20%;
+  top: 22%;
+}
+
+.gate-background::after {
+  right: 20%;
+  bottom: 24%;
+
+  animation-delay: 1.5s;
+}
+
+.gate-stars {
+  position: absolute;
+
+  top: 15%;
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  font-size: 22px;
+
+  color: var(--color-gold-light);
+
+  opacity: 0.7;
+
+  animation:
+    gateStarPulse 3s ease-in-out infinite;
+}
+
+
+/* =========================================================
+   WELCOME TEXT
+   ========================================================= */
+
+.gate-welcome {
+  position: relative;
+
+  z-index: 2;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 7px;
+
+  margin-bottom: 35px;
+
+  color: #f5ead8;
+
+  pointer-events: none;
+}
+
+.gate-welcome span {
+  font-size: 10px;
+
+  font-weight: 400;
+
+  letter-spacing: 0.42em;
+
+  text-transform: uppercase;
+
+  color: var(--color-gold-light);
+}
+
+.gate-welcome strong {
+  font-family: var(--font-script);
+
+  font-size: clamp(32px, 8vw, 52px);
+
+  font-weight: 400;
+
+  font-style: italic;
+
+  letter-spacing: 0.01em;
+}
+
+
+/* =========================================================
+   OPEN BUTTON
+   ========================================================= */
+
+.gate-button {
+  position: relative;
+
+  z-index: 20;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 16px;
+
+  min-width: 235px;
+
+  padding: 14px 25px;
+
+  border: 1px solid rgba(216, 189, 143, 0.8);
+
+  border-radius: 999px;
 
   background:
-    radial-gradient(
-      ellipse at center 48%,
-      rgba(255, 226, 170, 0.32),
-      rgba(216, 189, 143, 0.11) 20%,
-      transparent 52%
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,0.08),
+      rgba(216,189,143,0.08)
     );
 
-  opacity: 0;
+  color: #f4e7d0;
 
-  animation:
-    gateGlowReveal 2.8s ease 0.45s forwards;
+  font-size: 10px;
+
+  font-weight: 400;
+
+  letter-spacing: 0.2em;
+
+  text-transform: uppercase;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 0 0 1px rgba(184,147,90,0.08),
+    0 15px 45px rgba(0,0,0,0.25);
+
+  backdrop-filter: blur(8px);
+
+  transition:
+    transform .35s ease,
+    background .35s ease,
+    box-shadow .35s ease;
 }
 
-/* ---------------------------------------------------------
-   DOORS
-   --------------------------------------------------------- */
+.gate-button:hover {
+  transform: translateY(-3px);
 
-.gate-left,
-.gate-right {
+  background:
+    rgba(216,189,143,0.15);
+
+  box-shadow:
+    0 15px 55px rgba(0,0,0,0.35),
+    0 0 25px rgba(216,189,143,0.12);
+}
+
+.gate-button:active {
+  transform: scale(.97);
+}
+
+.gate-button-star {
+  color: var(--color-gold);
+
+  font-size: 10px;
+
+  animation:
+    buttonStar 2s ease-in-out infinite;
+}
+
+.gate-button-star:last-child {
+  animation-delay: .8s;
+}
+
+
+/* =========================================================
+   DOORS
+   ========================================================= */
+
+.gate-door {
   position: absolute;
+
   top: 0;
   bottom: 0;
 
   width: 50%;
 
-  z-index: 2;
+  z-index: 10;
 
   overflow: hidden;
 
   background:
     linear-gradient(
-      90deg,
-      #100c09 0%,
-      #21170f 18%,
-      #503820 50%,
-      #2b1d12 82%,
-      #120e0a 100%
+      135deg,
+      #173324 0%,
+      #254b35 35%,
+      #173324 70%,
+      #0d2117 100%
     );
 
-  border-color: rgba(216, 189, 143, 0.65);
-
   box-shadow:
-    inset 0 0 100px rgba(0, 0, 0, 0.72),
-    inset 0 0 35px rgba(184, 147, 90, 0.12);
+    inset 0 0 50px rgba(0,0,0,0.35);
+
+  transition:
+    transform 2.2s cubic-bezier(.77,0,.18,1);
 }
 
-.gate-left {
+.gate-door-left {
   left: 0;
 
   transform-origin: left center;
-
-  border-right: 2px solid var(--color-gold);
-
-  animation:
-    gateLeftOpen
-    2.35s
-    cubic-bezier(0.77, 0, 0.18, 1)
-    0.9s
-    forwards;
 }
 
-.gate-right {
+.gate-door-right {
   right: 0;
 
   transform-origin: right center;
-
-  border-left: 2px solid var(--color-gold);
-
-  animation:
-    gateRightOpen
-    2.35s
-    cubic-bezier(0.77, 0, 0.18, 1)
-    0.9s
-    forwards;
 }
 
-/* ---------------------------------------------------------
-   WOOD / METAL TEXTURE
-   --------------------------------------------------------- */
 
-.gate-left::before,
-.gate-right::before {
+/* =========================================================
+   DOOR GOLD TEXTURE
+   ========================================================= */
+
+.gate-door::before {
   content: '';
 
   position: absolute;
+
   inset: 0;
 
-  opacity: 0.3;
-
-  background:
-    repeating-linear-gradient(
-      90deg,
-      transparent 0,
-      transparent 17px,
-      rgba(216, 189, 143, 0.06) 18px,
-      transparent 19px
-    );
-
-  pointer-events: none;
-}
-
-/* ---------------------------------------------------------
-   MOROCCAN GEOMETRIC PATTERN
-   --------------------------------------------------------- */
-
-.gate-left::after,
-.gate-right::after {
-  content: '';
-
-  position: absolute;
-
-  top: 7%;
-  bottom: 7%;
-
-  width: 78%;
-
-  border: 1px solid rgba(216, 189, 143, 0.42);
+  opacity: .18;
 
   background:
     linear-gradient(
       45deg,
-      transparent 47%,
-      rgba(216, 189, 143, 0.13) 48%,
-      rgba(216, 189, 143, 0.13) 52%,
-      transparent 53%
+      transparent 46%,
+      var(--color-gold) 47%,
+      var(--color-gold) 53%,
+      transparent 54%
     ),
     linear-gradient(
       -45deg,
-      transparent 47%,
-      rgba(216, 189, 143, 0.13) 48%,
-      rgba(216, 189, 143, 0.13) 52%,
-      transparent 53%
+      transparent 46%,
+      var(--color-gold) 47%,
+      var(--color-gold) 53%,
+      transparent 54%
     );
 
-  background-size: 48px 48px;
-
-  box-shadow:
-    inset 0 0 40px rgba(184, 147, 90, 0.08);
+  background-size: 62px 62px;
 
   pointer-events: none;
 }
 
-.gate-left::after {
-  right: 8%;
+
+/* =========================================================
+   DOOR INNER
+   ========================================================= */
+
+.gate-door-inner {
+  position: absolute;
+
+  inset: 18px;
+
+  border:
+    1px solid rgba(216,189,143,.55);
+
+  box-shadow:
+    inset 0 0 0 7px rgba(184,147,90,.07),
+    inset 0 0 45px rgba(0,0,0,.2);
+
+  overflow: hidden;
 }
 
-.gate-right::after {
-  left: 8%;
-}
 
-/* ---------------------------------------------------------
-   INNER FRAME
-   --------------------------------------------------------- */
+/* =========================================================
+   MOROCCAN ARCH
+   ========================================================= */
 
 .gate-arch {
   position: absolute;
 
-  top: 10%;
-  bottom: 10%;
+  left: 12%;
+  right: 12%;
+  top: 13%;
 
-  width: 68%;
+  height: 48%;
 
-  border: 1px solid rgba(184, 147, 90, 0.55);
+  border:
+    3px solid rgba(216,189,143,.7);
+
+  border-bottom: 0;
+
+  border-radius:
+    50% 50% 0 0;
 
   box-shadow:
-    inset 0 0 30px rgba(184, 147, 90, 0.08),
-    0 0 20px rgba(184, 147, 90, 0.04);
+    0 0 0 8px rgba(184,147,90,.06),
+    inset 0 0 30px rgba(0,0,0,.15);
 }
-
-.gate-left .gate-arch {
-  right: 13%;
-}
-
-.gate-right .gate-arch {
-  left: 13%;
-}
-
-/* ---------------------------------------------------------
-   ARCH TOP
-   --------------------------------------------------------- */
 
 .gate-arch::before {
   content: '';
 
   position: absolute;
 
-  left: 50%;
-  top: -1px;
-
-  width: 65%;
-  height: 100px;
-
-  transform: translateX(-50%);
+  inset: 12px;
 
   border:
-    1px solid rgba(216, 189, 143, 0.55);
+    1px solid rgba(234,217,188,.5);
 
   border-bottom: 0;
 
   border-radius:
-    120px 120px 0 0;
+    50% 50% 0 0;
 }
-
-/* ---------------------------------------------------------
-   INNER ARCH
-   --------------------------------------------------------- */
 
 .gate-arch::after {
   content: '';
@@ -304,408 +447,348 @@ a {
   position: absolute;
 
   left: 50%;
-  top: 13px;
+  top: -2px;
 
-  width: calc(65% - 22px);
-  height: 80px;
-
-  transform: translateX(-50%);
-
-  border:
-    1px solid rgba(216, 189, 143, 0.24);
-
-  border-bottom: 0;
-
-  border-radius:
-    100px 100px 0 0;
-}
-
-/* ---------------------------------------------------------
-   GOLD PATTERN
-   --------------------------------------------------------- */
-
-.gate-pattern {
-  position: absolute;
-
-  left: 50%;
-  top: 50%;
-
-  width: 125px;
-  height: 125px;
+  width: 35px;
+  height: 35px;
 
   transform:
-    translate(-50%, -50%)
+    translateX(-50%)
     rotate(45deg);
 
   border:
-    1px solid rgba(216, 189, 143, 0.48);
+    1px solid var(--color-gold);
 
-  box-shadow:
-    0 0 30px rgba(184, 147, 90, 0.07);
+  background: #1d3a29;
 }
 
-.gate-pattern::before {
-  content: '';
-
-  position: absolute;
-
-  inset: 13px;
-
-  border:
-    1px solid rgba(216, 189, 143, 0.35);
-}
-
-.gate-pattern::after {
-  content: '';
-
+.gate-arch span {
   position: absolute;
 
   left: 50%;
-  top: 50%;
-
-  width: 46px;
-  height: 46px;
-
-  transform:
-    translate(-50%, -50%);
-
-  border:
-    1px solid rgba(216, 189, 143, 0.55);
-}
-
-/* ---------------------------------------------------------
-   PATTERN STARS
-   --------------------------------------------------------- */
-
-.pattern-star {
-  position: absolute;
-
-  color: var(--color-gold);
-
-  font-size: 12px;
-
-  transform: rotate(-45deg);
-
-  text-shadow:
-    0 0 12px rgba(216, 189, 143, 0.35);
-}
-
-.pattern-star-1 {
-  top: -9px;
-  left: 50%;
-
-  transform:
-    translateX(-50%)
-    rotate(-45deg);
-}
-
-.pattern-star-2 {
-  bottom: -9px;
-  left: 50%;
-
-  transform:
-    translateX(-50%)
-    rotate(-45deg);
-}
-
-.pattern-star-3 {
-  left: 50%;
-  top: 50%;
-
-  transform:
-    translate(-50%, -50%)
-    rotate(-45deg);
-
-  font-size: 18px;
-}
-
-/* ---------------------------------------------------------
-   DOOR HANDLES
-   --------------------------------------------------------- */
-
-.gate-handle {
-  position: absolute;
-
-  top: 50%;
-
-  width: 34px;
-  height: 34px;
-
-  transform: translateY(-50%);
-
-  border:
-    1px solid rgba(216, 189, 143, 0.75);
-
-  border-radius: 50%;
-
-  background:
-    radial-gradient(
-      circle,
-      rgba(216, 189, 143, 0.15),
-      transparent 65%
-    );
-
-  box-shadow:
-    0 0 20px rgba(184, 147, 90, 0.12);
-}
-
-.gate-left .gate-handle {
-  right: 5%;
-}
-
-.gate-right .gate-handle {
-  left: 5%;
-}
-
-.gate-handle span {
-  position: absolute;
-
-  left: 50%;
-  top: 50%;
+  top: 28%;
 
   width: 8px;
   height: 8px;
 
   transform: translate(-50%, -50%);
 
-  border:
-    1px solid var(--color-gold);
-
   border-radius: 50%;
+
+  background: var(--color-gold);
+
+  box-shadow:
+    0 0 15px rgba(216,189,143,.45);
 }
 
-/* ---------------------------------------------------------
-   CENTER EMBLEM
-   --------------------------------------------------------- */
 
-.gate-center {
+/* =========================================================
+   ZELLIGE PATTERN
+   ========================================================= */
+
+.gate-pattern {
+  position: absolute;
+
+  left: 20%;
+  right: 20%;
+  bottom: 13%;
+
+  height: 28%;
+
+  border:
+    1px solid rgba(216,189,143,.35);
+
+  background:
+    linear-gradient(
+      45deg,
+      transparent 46%,
+      rgba(216,189,143,.3) 47%,
+      rgba(216,189,143,.3) 53%,
+      transparent 54%
+    ),
+    linear-gradient(
+      -45deg,
+      transparent 46%,
+      rgba(216,189,143,.3) 47%,
+      rgba(216,189,143,.3) 53%,
+      transparent 54%
+    );
+
+  background-size: 30px 30px;
+
+  box-shadow:
+    inset 0 0 25px rgba(0,0,0,.2);
+}
+
+.gate-diamond {
+  position: absolute;
+
+  width: 34px;
+  height: 34px;
+
+  border:
+    1px solid rgba(216,189,143,.7);
+
+  transform: rotate(45deg);
+}
+
+.diamond-1 {
+  left: 15%;
+  top: 28%;
+}
+
+.diamond-2 {
+  left: 50%;
+  top: 28%;
+
+  transform:
+    translateX(-50%)
+    rotate(45deg);
+}
+
+.diamond-3 {
+  right: 15%;
+  top: 28%;
+}
+
+.gate-star {
   position: absolute;
 
   left: 50%;
   top: 50%;
 
-  z-index: 5;
-
-  width: 100px;
-  height: 100px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
   transform:
     translate(-50%, -50%);
 
-  animation:
-    emblemFade
-    1s
-    ease
-    2.05s
-    forwards;
-}
+  font-size: 24px;
 
-.gate-emblem {
-  position: relative;
-
-  width: 58px;
-  height: 58px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  transform: rotate(45deg);
-
-  border:
-    1px solid rgba(216, 189, 143, 0.85);
-
-  background:
-    radial-gradient(
-      circle,
-      rgba(184, 147, 90, 0.22),
-      rgba(30, 21, 14, 0.95)
-    );
-
-  box-shadow:
-    0 0 35px rgba(184, 147, 90, 0.2);
-}
-
-.gate-emblem::before {
-  content: '';
-
-  position: absolute;
-
-  inset: 7px;
-
-  border:
-    1px solid rgba(216, 189, 143, 0.4);
-}
-
-.gate-emblem span {
   color: var(--color-gold);
-
-  font-size: 20px;
-
-  transform: rotate(-45deg);
 
   text-shadow:
-    0 0 15px rgba(216, 189, 143, 0.45);
+    0 0 12px rgba(216,189,143,.25);
 }
 
-/* ---------------------------------------------------------
-   TOP ORNAMENT
-   --------------------------------------------------------- */
-
-.gate-top-ornament {
-  position: absolute;
-
-  top: 5%;
-
-  left: 50%;
-
-  z-index: 6;
-
-  width: min(460px, 72vw);
-
-  display: flex;
-
-  align-items: center;
-  justify-content: center;
-
-  gap: 15px;
-
-  transform: translateX(-50%);
-
-  opacity: 0;
-
-  animation:
-    topOrnamentReveal
-    1s
-    ease
-    0.7s
-    forwards;
-}
-
-.ornament-line {
-  flex: 1;
-
-  height: 1px;
-
-  background:
-    linear-gradient(
-      90deg,
-      transparent,
-      rgba(216, 189, 143, 0.65)
-    );
-}
-
-.ornament-line.right {
-  background:
-    linear-gradient(
-      90deg,
-      rgba(216, 189, 143, 0.65),
-      transparent
-    );
-}
-
-.ornament-diamond {
-  width: 25px;
-  height: 25px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  color: var(--color-gold);
-
-  font-size: 11px;
-
-  border:
-    1px solid rgba(216, 189, 143, 0.65);
-
-  transform: rotate(45deg);
-}
-
-.ornament-diamond::first-letter {
-  transform: rotate(-45deg);
-}
 
 /* =========================================================
-   ATMOSPHERE / MIST
+   DOOR HANDLES
    ========================================================= */
 
-.gate-atmosphere {
-  position: absolute;
-  inset: 0;
-
-  z-index: 4;
-
-  pointer-events: none;
-
-  animation:
-    atmosphereFade
-    1.3s
-    ease
-    2.15s
-    forwards;
-}
-
-.mist {
+.gate-handle {
   position: absolute;
 
-  width: 60vw;
-  height: 18vh;
+  top: 55%;
+
+  width: 13px;
+  height: 13px;
 
   border-radius: 50%;
 
   background:
     radial-gradient(
-      ellipse,
-      rgba(255, 244, 222, 0.17),
-      transparent 70%
+      circle at 35% 30%,
+      #f0d8aa,
+      #b8935a 45%,
+      #76572f
     );
 
-  filter: blur(20px);
-
-  opacity: 0.6;
+  box-shadow:
+    0 0 0 3px rgba(184,147,90,.12),
+    0 3px 8px rgba(0,0,0,.35);
 }
 
-.mist-1 {
-  left: -20%;
-  bottom: 20%;
+.gate-door-left .gate-handle {
+  right: 13px;
+}
+
+.gate-door-right .gate-handle {
+  left: 13px;
+}
+
+
+/* =========================================================
+   GATE FRAME
+   ========================================================= */
+
+.gate-frame {
+  position: absolute;
+
+  inset: 0;
+
+  z-index: 30;
+
+  pointer-events: none;
+}
+
+.gate-frame-left,
+.gate-frame-right {
+  position: absolute;
+
+  top: 0;
+  bottom: 0;
+
+  width: 13px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #76572f,
+      #e0c18b,
+      #9c713c,
+      #e0c18b,
+      #76572f
+    );
+
+  box-shadow:
+    0 0 20px rgba(0,0,0,.25);
+}
+
+.gate-frame-left {
+  left: calc(50% - 13px);
+}
+
+.gate-frame-right {
+  right: calc(50% - 13px);
+}
+
+.gate-frame-top {
+  position: absolute;
+
+  left: 50%;
+  top: 5%;
+
+  width: 90px;
+  height: 90px;
+
+  transform:
+    translateX(-50%)
+    rotate(45deg);
+
+  border:
+    2px solid var(--color-gold);
+
+  background:
+    #193526;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  box-shadow:
+    0 0 0 7px rgba(184,147,90,.08),
+    0 10px 30px rgba(0,0,0,.3);
+}
+
+.gate-frame-top svg {
+  width: 38px;
+  height: 38px;
+
+  transform: rotate(-45deg);
+
+  color: var(--color-gold);
+}
+
+
+/* =========================================================
+   OPENING ANIMATION
+   ========================================================= */
+
+.gate-opened .gate-door-left {
+  transform:
+    translateX(-100%)
+    rotateY(-12deg);
+}
+
+.gate-opened .gate-door-right {
+  transform:
+    translateX(100%)
+    rotateY(12deg);
+}
+
+.gate-opened {
+  pointer-events: none;
+
+  opacity: 0;
+
+  visibility: hidden;
+}
+
+
+/* =========================================================
+   LITTLE LIGHT WHEN OPENING
+   ========================================================= */
+
+.gate-opened .gate-background {
+  animation:
+    gateLight 2.2s ease forwards;
+}
+
+
+/* =========================================================
+   ZELLIGE DIVIDER
+   ========================================================= */
+
+.zellige-divider {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 14px;
+
+  padding: 30px 24px;
+
+  color: var(--color-gold);
+
+  opacity: 0;
 
   animation:
-    mistMove1
-    5s
-    ease-in-out
-    infinite;
+    dividerReveal 1s ease forwards;
 }
 
-.mist-2 {
-  right: -20%;
-  bottom: 34%;
+.zellige-divider .line {
+  flex: 1;
+
+  height: 1px;
+
+  max-width: 150px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      var(--color-gold-soft),
+      transparent
+    );
+
+  transform: scaleX(0);
 
   animation:
-    mistMove2
-    6s
-    ease-in-out
-    infinite;
+    lineExpand
+    1s
+    cubic-bezier(.22,1,.36,1)
+    forwards;
 }
 
-.mist-3 {
-  left: 20%;
-  bottom: 5%;
+.zellige-divider svg {
+  width: 24px;
+  height: 24px;
 
-  width: 65vw;
+  flex-shrink: 0;
 
-  opacity: 0.35;
+  filter:
+    drop-shadow(
+      0 0 5px
+      rgba(184,147,90,.25)
+    );
 
   animation:
-    mistMove3
-    7s
-    ease-in-out
-    infinite;
+    starReveal
+    1s
+    cubic-bezier(.16,1,.3,1)
+    forwards;
 }
+
 
 /* =========================================================
    HERO
@@ -717,7 +800,9 @@ a {
   position: relative;
 
   display: flex;
+
   flex-direction: column;
+
   align-items: center;
   justify-content: center;
 
@@ -730,12 +815,12 @@ a {
   background:
     radial-gradient(
       circle at 50% 40%,
-      rgba(216, 189, 143, 0.23),
+      rgba(216,189,143,.23),
       transparent 35%
     ),
     radial-gradient(
       circle at 0% 100%,
-      rgba(31, 61, 43, 0.07),
+      rgba(31,61,43,.07),
       transparent 35%
     ),
     linear-gradient(
@@ -746,20 +831,9 @@ a {
     );
 }
 
-.hero-inner {
-  position: relative;
-
-  z-index: 2;
-
-  width: 100%;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
 
 /* =========================================================
-   HERO DECORATION
+   DECORATIVE CORNERS
    ========================================================= */
 
 .hero::before,
@@ -773,7 +847,7 @@ a {
 
   pointer-events: none;
 
-  opacity: 0.13;
+  opacity: .13;
 
   background:
     linear-gradient(
@@ -813,8 +887,10 @@ a {
 
   transform: rotate(-8deg);
 
-  animation-name: ornamentFloatReverse;
+  animation-name:
+    ornamentFloatReverse;
 }
+
 
 /* =========================================================
    CENTRAL LIGHT
@@ -839,7 +915,7 @@ a {
   background:
     radial-gradient(
       circle,
-      rgba(216, 189, 143, 0.20),
+      rgba(216,189,143,.20),
       transparent 68%
     );
 
@@ -854,6 +930,7 @@ a {
     infinite;
 }
 
+
 /* =========================================================
    EYEBROW
    ========================================================= */
@@ -867,7 +944,7 @@ a {
 
   font-weight: 400;
 
-  letter-spacing: 0.38em;
+  letter-spacing: .38em;
 
   text-transform: uppercase;
 
@@ -883,7 +960,7 @@ a {
     heroReveal
     1s
     cubic-bezier(.22,1,.36,1)
-    0.15s
+    .15s
     forwards;
 }
 
@@ -899,7 +976,8 @@ a {
 
   color: var(--color-gold);
 
-  transform: translateY(-50%);
+  transform:
+    translateY(-50%);
 }
 
 .hero .eyebrow::before {
@@ -910,6 +988,7 @@ a {
   left: calc(100% + 14px);
 }
 
+
 /* =========================================================
    INITIALS
    ========================================================= */
@@ -919,13 +998,13 @@ a {
 
   font-family: var(--font-display);
 
-  font-size: clamp(72px, 20vw, 120px);
+  font-size: clamp(72px,20vw,120px);
 
   font-weight: 400;
 
-  line-height: 0.9;
+  line-height: .9;
 
-  letter-spacing: -0.05em;
+  letter-spacing: -.05em;
 
   color: var(--color-emerald);
 
@@ -933,15 +1012,16 @@ a {
 
   opacity: 0;
 
-  transform: scale(0.82);
+  transform: scale(.82);
 
   animation:
     initialsReveal
     1.35s
     cubic-bezier(.16,1,.3,1)
-    0.30s
+    .30s
     forwards;
 }
+
 
 /* =========================================================
    GOLD LINE
@@ -962,15 +1042,17 @@ a {
 
   background: var(--color-gold);
 
-  transform: translateX(-50%);
+  transform:
+    translateX(-50%);
 
   animation:
     lineReveal
-    0.9s
+    .9s
     cubic-bezier(.22,1,.36,1)
     1.15s
     forwards;
 }
+
 
 /* =========================================================
    NAMES
@@ -983,7 +1065,7 @@ a {
 
   font-weight: 400;
 
-  font-size: clamp(25px, 6vw, 35px);
+  font-size: clamp(25px,6vw,35px);
 
   line-height: 1.15;
 
@@ -999,24 +1081,10 @@ a {
     heroReveal
     1s
     cubic-bezier(.22,1,.36,1)
-    0.72s
+    .72s
     forwards;
 }
 
-.names-amp {
-  display: inline-block;
-
-  margin:
-    0 10px;
-
-  color: var(--color-gold);
-
-  font-family: var(--font-display);
-
-  font-style: normal;
-
-  font-size: .65em;
-}
 
 /* =========================================================
    QUOTE
@@ -1045,9 +1113,10 @@ a {
     heroReveal
     1s
     cubic-bezier(.22,1,.36,1)
-    0.98s
+    .98s
     forwards;
 }
+
 
 /* =========================================================
    DATE
@@ -1066,26 +1135,24 @@ a {
 
   font-weight: 400;
 
-  letter-spacing: 0.18em;
+  letter-spacing: .18em;
 
   text-transform: uppercase;
 
   color: var(--color-emerald);
 
   border:
-    1px solid rgba(184, 147, 90, 0.55);
+    1px solid rgba(184,147,90,.55);
 
   border-radius: 999px;
 
   background:
-    rgba(255, 255, 255, 0.25);
+    rgba(255,255,255,.25);
 
   backdrop-filter: blur(8px);
 
-  -webkit-backdrop-filter: blur(8px);
-
   box-shadow:
-    0 5px 25px rgba(184, 147, 90, 0.06);
+    0 5px 25px rgba(184,147,90,.06);
 
   opacity: 0;
 
@@ -1097,22 +1164,8 @@ a {
     cubic-bezier(.22,1,.36,1)
     1.18s
     forwards;
-
-  transition:
-    transform .4s ease,
-    box-shadow .4s ease,
-    background .4s ease;
 }
 
-.date-icon {
-  display: inline-block;
-
-  margin-right: 8px;
-
-  color: var(--color-gold);
-
-  font-size: 8px;
-}
 
 /* =========================================================
    COUNTDOWN
@@ -1177,13 +1230,6 @@ a {
   line-height: 1;
 
   color: var(--color-clay);
-
-  transition:
-    transform .3s ease;
-}
-
-.countdown .unit:hover .value {
-  transform: translateY(-3px);
 }
 
 .countdown .unit .label {
@@ -1193,67 +1239,13 @@ a {
 
   font-weight: 400;
 
-  letter-spacing: 0.18em;
+  letter-spacing: .18em;
 
   text-transform: uppercase;
 
   color: var(--color-ink-soft);
 }
 
-/* =========================================================
-   SCROLL HINT
-   ========================================================= */
-
-.scroll-hint {
-  position: absolute;
-
-  top: calc(100% + 55px);
-  left: 50%;
-
-  transform: translateX(-50%);
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  gap: 9px;
-
-  color: var(--color-ink-soft);
-
-  font-size: 8px;
-
-  letter-spacing: .2em;
-
-  text-transform: uppercase;
-
-  opacity: 0;
-
-  animation:
-    scrollHintReveal
-    1s
-    ease
-    2.1s
-    forwards;
-}
-
-.scroll-hint i {
-  display: block;
-
-  width: 1px;
-  height: 28px;
-
-  background:
-    linear-gradient(
-      var(--color-gold),
-      transparent
-    );
-
-  animation:
-    scrollHintMove
-    1.8s
-    ease-in-out
-    infinite;
-}
 
 /* =========================================================
    SECTIONS
@@ -1272,7 +1264,7 @@ a {
 .section .heading {
   font-family: var(--font-display);
 
-  font-size: clamp(27px, 6vw, 37px);
+  font-size: clamp(27px,6vw,37px);
 
   font-weight: 400;
 
@@ -1293,14 +1285,10 @@ a {
   margin: 0 0 42px;
 }
 
+
 /* =========================================================
    MESSAGE
    ========================================================= */
-
-.message-section {
-  padding-top: 75px;
-  padding-bottom: 75px;
-}
 
 .section > .quote {
   position: relative;
@@ -1331,6 +1319,7 @@ a {
 
   margin-bottom: 20px;
 }
+
 
 /* =========================================================
    DETAILS
@@ -1366,8 +1355,6 @@ a {
   box-shadow:
     0 10px 35px rgba(72,55,35,.04);
 
-  overflow: hidden;
-
   transition:
     transform .45s cubic-bezier(.22,1,.36,1),
     box-shadow .45s ease,
@@ -1389,14 +1376,6 @@ a {
     1px solid rgba(184,147,90,.20);
 
   transform: rotate(45deg);
-}
-
-.detail-icon {
-  margin-bottom: 14px;
-
-  color: var(--color-gold);
-
-  font-size: 12px;
 }
 
 .detail-card:hover {
@@ -1464,17 +1443,8 @@ a {
 
   border-bottom:
     1px solid var(--color-emerald);
-
-  transition:
-    letter-spacing .3s ease,
-    opacity .3s ease;
 }
 
-.maps-link:hover {
-  letter-spacing: .19em;
-
-  opacity: .75;
-}
 
 /* =========================================================
    TIMELINE
@@ -1545,20 +1515,6 @@ a {
 
   border:
     2px solid var(--color-gold);
-
-  box-shadow:
-    0 0 0 4px rgba(184,147,90,.06);
-
-  transition:
-    transform .3s ease,
-    box-shadow .3s ease;
-}
-
-.timeline-item:hover .rail::before {
-  transform: scale(1.25);
-
-  box-shadow:
-    0 0 0 7px rgba(184,147,90,.08);
 }
 
 .timeline-item:last-child .rail {
@@ -1585,27 +1541,6 @@ a {
   margin: 0;
 }
 
-/* =========================================================
-   REVEAL
-   ========================================================= */
-
-.reveal {
-  opacity: 0;
-
-  transform:
-    translateY(35px);
-
-  transition:
-    opacity .9s cubic-bezier(.22,1,.36,1),
-    transform .9s cubic-bezier(.22,1,.36,1);
-}
-
-.reveal-visible {
-  opacity: 1;
-
-  transform:
-    translateY(0);
-}
 
 /* =========================================================
    FOOTER
@@ -1660,6 +1595,7 @@ a {
   letter-spacing: .08em;
 }
 
+
 /* =========================================================
    LOADING / EMPTY
    ========================================================= */
@@ -1693,265 +1629,61 @@ a {
     );
 }
 
-.loading-inner {
-  display: flex;
-
-  flex-direction: column;
-
-  align-items: center;
-
-  gap: 18px;
-}
-
-.loading-inner p {
-  margin: 0;
-}
-
-.loading-mark,
-.empty-mark {
-  color: var(--color-gold);
-
-  font-size: 20px;
-
-  animation:
-    loadingPulse
-    2s
-    ease-in-out
-    infinite;
-}
-
-.empty-state p {
-  margin: 15px 0 5px;
-}
-
-.empty-state small {
-  font-family: var(--font-body);
-
-  font-style: normal;
-
-  font-size: 11px;
-
-  color: var(--color-clay);
-
-  word-break: break-word;
-}
 
 /* =========================================================
-   GATE ANIMATIONS
+   REVEAL
    ========================================================= */
 
-@keyframes gateLeftOpen {
+.reveal {
+  opacity: 0;
 
-  0% {
-    transform:
-      perspective(1600px)
-      rotateY(0deg);
-  }
+  transform:
+    translateY(35px);
 
-  100% {
-    transform:
-      perspective(1600px)
-      rotateY(-88deg);
-  }
+  transition:
+    opacity 1s cubic-bezier(.22,1,.36,1),
+    transform 1s cubic-bezier(.22,1,.36,1);
 }
 
-@keyframes gateRightOpen {
+.reveal-visible {
+  opacity: 1;
 
-  0% {
-    transform:
-      perspective(1600px)
-      rotateY(0deg);
-  }
-
-  100% {
-    transform:
-      perspective(1600px)
-      rotateY(88deg);
-  }
+  transform:
+    translateY(0);
 }
 
-@keyframes gateGlowReveal {
-
-  0% {
-    opacity: 0;
-    transform: scale(.75);
-  }
-
-  45% {
-    opacity: .35;
-  }
-
-  100% {
-    opacity: 1;
-    transform: scale(1.1);
-  }
-}
-
-@keyframes emblemFade {
-
-  0% {
-    opacity: 1;
-
-    transform:
-      translate(-50%, -50%)
-      scale(1);
-  }
-
-  60% {
-    opacity: .9;
-  }
-
-  100% {
-    opacity: 0;
-
-    transform:
-      translate(-50%, -50%)
-      scale(.65);
-  }
-}
-
-@keyframes topOrnamentReveal {
-
-  from {
-    opacity: 0;
-    transform:
-      translateX(-50%)
-      translateY(-10px);
-  }
-
-  to {
-    opacity: 1;
-    transform:
-      translateX(-50%)
-      translateY(0);
-  }
-}
-
-@keyframes atmosphereFade {
-
-  from {
-    opacity: 1;
-  }
-
-  to {
-    opacity: 0;
-  }
-}
-
-@keyframes gateDisappear {
-
-  0% {
-    opacity: 1;
-  }
-
-  100% {
-    opacity: 0;
-    visibility: hidden;
-  }
-}
 
 /* =========================================================
-   MIST ANIMATIONS
-   ========================================================= */
-
-@keyframes mistMove1 {
-
-  0%,
-  100% {
-    transform:
-      translateX(-8%)
-      translateY(0)
-      scale(1);
-  }
-
-  50% {
-    transform:
-      translateX(20%)
-      translateY(-18px)
-      scale(1.12);
-  }
-}
-
-@keyframes mistMove2 {
-
-  0%,
-  100% {
-    transform:
-      translateX(8%)
-      scale(1);
-  }
-
-  50% {
-    transform:
-      translateX(-20%)
-      translateY(-15px)
-      scale(1.15);
-  }
-}
-
-@keyframes mistMove3 {
-
-  0%,
-  100% {
-    transform:
-      translateX(-5%)
-      scale(1);
-  }
-
-  50% {
-    transform:
-      translateX(12%)
-      translateY(-12px)
-      scale(1.1);
-  }
-}
-
-/* =========================================================
-   HERO ANIMATIONS
+   ANIMATIONS
    ========================================================= */
 
 @keyframes heroReveal {
-
   from {
     opacity: 0;
-
-    transform:
-      translateY(18px);
+    transform: translateY(18px);
   }
 
   to {
     opacity: 1;
-
-    transform:
-      translateY(0);
+    transform: translateY(0);
   }
 }
 
 @keyframes initialsReveal {
-
   from {
     opacity: 0;
-
-    transform:
-      scale(.82);
-
-    filter:
-      blur(8px);
+    transform: scale(.82);
+    filter: blur(8px);
   }
 
   to {
     opacity: 1;
-
-    transform:
-      scale(1);
-
-    filter:
-      blur(0);
+    transform: scale(1);
+    filter: blur(0);
   }
 }
 
 @keyframes lineReveal {
-
   from {
     width: 0;
   }
@@ -1962,20 +1694,16 @@ a {
 }
 
 @keyframes lineExpand {
-
   from {
-    transform:
-      scaleX(0);
+    transform: scaleX(0);
   }
 
   to {
-    transform:
-      scaleX(1);
+    transform: scaleX(1);
   }
 }
 
 @keyframes dividerReveal {
-
   from {
     opacity: 0;
   }
@@ -1986,26 +1714,18 @@ a {
 }
 
 @keyframes starReveal {
-
   from {
     opacity: 0;
-
-    transform:
-      rotate(-45deg)
-      scale(.6);
+    transform: rotate(-45deg) scale(.6);
   }
 
   to {
     opacity: 1;
-
-    transform:
-      rotate(0)
-      scale(1);
+    transform: rotate(0) scale(1);
   }
 }
 
 @keyframes breathe {
-
   0%,
   100% {
     transform:
@@ -2025,7 +1745,6 @@ a {
 }
 
 @keyframes ornamentFloat {
-
   0%,
   100% {
     transform:
@@ -2041,7 +1760,6 @@ a {
 }
 
 @keyframes ornamentFloatReverse {
-
   0%,
   100% {
     transform:
@@ -2056,113 +1774,78 @@ a {
   }
 }
 
-@keyframes scrollHintReveal {
-
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: .75;
-  }
-}
-
-@keyframes scrollHintMove {
-
-  0%,
-  100% {
-    transform:
-      translateY(0);
-  }
-
-  50% {
-    transform:
-      translateY(7px);
-  }
-}
-
-@keyframes loadingPulse {
-
-  0%,
-  100% {
-    opacity: .45;
-    transform: scale(.9);
-  }
-
-  50% {
-    opacity: 1;
-    transform: scale(1.1);
-  }
-}
 
 /* =========================================================
-   ZELLIGE DIVIDER
+   GATE ANIMATIONS
    ========================================================= */
 
-.zellige-divider {
-  display: flex;
+@keyframes gateStarFloat {
+  0%,
+  100% {
+    transform:
+      translateY(0)
+      scale(1);
 
-  align-items: center;
-  justify-content: center;
+    opacity: .3;
+  }
 
-  gap: 14px;
+  50% {
+    transform:
+      translateY(-15px)
+      scale(1.25);
 
-  padding: 30px 24px;
-
-  color: var(--color-gold);
-
-  opacity: 0;
-
-  animation:
-    dividerReveal
-    1s
-    ease
-    forwards;
+    opacity: .8;
+  }
 }
 
-.zellige-divider .line {
-  flex: 1;
+@keyframes gateStarPulse {
+  0%,
+  100% {
+    transform:
+      translateX(-50%)
+      scale(1);
 
-  height: 1px;
+    opacity: .5;
+  }
 
-  max-width: 150px;
+  50% {
+    transform:
+      translateX(-50%)
+      scale(1.3);
 
-  background:
-    linear-gradient(
-      90deg,
-      transparent,
-      var(--color-gold-soft),
-      transparent
-    );
-
-  transform:
-    scaleX(0);
-
-  animation:
-    lineExpand
-    1s
-    cubic-bezier(.22,1,.36,1)
-    forwards;
+    opacity: 1;
+  }
 }
 
-.zellige-divider svg {
-  width: 24px;
-  height: 24px;
+@keyframes buttonStar {
+  0%,
+  100% {
+    transform: scale(1);
 
-  flex-shrink: 0;
+    opacity: .6;
+  }
 
-  filter:
-    drop-shadow(
-      0 0 5px
-      rgba(184, 147, 90, 0.25)
-    );
+  50% {
+    transform: scale(1.4);
 
-  animation:
-    starReveal
-    1s
-    cubic-bezier(.16,1,.3,1)
-    forwards;
+    opacity: 1;
+  }
 }
+
+@keyframes gateLight {
+  0% {
+    opacity: 1;
+  }
+
+  65% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
 
 /* =========================================================
    MOBILE
@@ -2170,30 +1853,121 @@ a {
 
 @media (max-width: 480px) {
 
-  .hero {
+  .gate-welcome {
+    margin-bottom: 28px;
+  }
+
+  .gate-welcome span {
+    font-size: 8px;
+
+    letter-spacing: .30em;
+  }
+
+  .gate-welcome strong {
+    font-size: 36px;
+  }
+
+  .gate-button {
+    min-width: 215px;
+
     padding:
-      50px 20px;
+      13px 18px;
+
+    font-size: 9px;
+
+    gap: 11px;
+  }
+
+  .gate-door {
+    width: 50%;
+  }
+
+  .gate-door-inner {
+    inset: 10px;
+  }
+
+  .gate-arch {
+    left: 9%;
+    right: 9%;
+
+    top: 15%;
+
+    height: 42%;
+  }
+
+  .gate-pattern {
+    left: 10%;
+    right: 10%;
+
+    bottom: 14%;
+
+    height: 24%;
+  }
+
+  .gate-diamond {
+    width: 24px;
+    height: 24px;
+  }
+
+  .gate-star {
+    font-size: 18px;
+  }
+
+  .gate-frame-top {
+    width: 64px;
+    height: 64px;
+
+    top: 6%;
+  }
+
+  .gate-frame-top svg {
+    width: 28px;
+    height: 28px;
+  }
+
+  .gate-frame-left,
+  .gate-frame-right {
+    width: 8px;
+  }
+
+  .gate-frame-left {
+    left: calc(50% - 8px);
+  }
+
+  .gate-frame-right {
+    right: calc(50% - 8px);
+  }
+
+  .gate-handle {
+    width: 10px;
+    height: 10px;
+  }
+
+  .gate-door-left .gate-handle {
+    right: 8px;
+  }
+
+  .gate-door-right .gate-handle {
+    left: 8px;
+  }
+
+  .hero {
+    padding: 50px 20px;
   }
 
   .hero .eyebrow {
     font-size: 9px;
 
-    letter-spacing:
-      .29em;
+    letter-spacing: .29em;
   }
 
   .hero .initials {
     font-size:
-      clamp(68px, 22vw, 94px);
+      clamp(68px,22vw,94px);
   }
 
   .hero .names {
     font-size: 26px;
-  }
-
-  .names-amp {
-    margin:
-      0 7px;
   }
 
   .hero .quote {
@@ -2223,8 +1997,7 @@ a {
   .countdown .unit .label {
     font-size: 7px;
 
-    letter-spacing:
-      .14em;
+    letter-spacing: .14em;
   }
 
   .section {
@@ -2257,126 +2030,34 @@ a {
     width: 180px;
     height: 180px;
 
-    background-size:
-      30px 30px;
-  }
-
-  /* ROYAL GATE MOBILE */
-
-  .gate-left,
-  .gate-right {
-    background:
-      linear-gradient(
-        90deg,
-        #100c09,
-        #3b2919 50%,
-        #17110c
-      );
-  }
-
-  .gate-left::after,
-  .gate-right::after {
-    top: 5%;
-    bottom: 5%;
-
-    width: 82%;
-
-    background-size:
-      30px 30px;
-  }
-
-  .gate-arch {
-    top: 8%;
-    bottom: 8%;
-
-    width: 76%;
-  }
-
-  .gate-left .gate-arch {
-    right: 10%;
-  }
-
-  .gate-right .gate-arch {
-    left: 10%;
-  }
-
-  .gate-pattern {
-    width: 82px;
-    height: 82px;
-  }
-
-  .gate-pattern::before {
-    inset: 9px;
-  }
-
-  .gate-pattern::after {
-    width: 30px;
-    height: 30px;
-  }
-
-  .pattern-star {
-    font-size: 8px;
-  }
-
-  .pattern-star-3 {
-    font-size: 13px;
-  }
-
-  .gate-handle {
-    width: 24px;
-    height: 24px;
-  }
-
-  .gate-handle span {
-    width: 6px;
-    height: 6px;
-  }
-
-  .gate-center {
-    width: 70px;
-    height: 70px;
-  }
-
-  .gate-emblem {
-    width: 45px;
-    height: 45px;
-  }
-
-  .gate-emblem span {
-    font-size: 15px;
-  }
-
-  .gate-top-ornament {
-    width: 80vw;
-
-    top: 4%;
-
-    gap: 10px;
-  }
-
-  .ornament-diamond {
-    width: 19px;
-    height: 19px;
-
-    font-size: 8px;
-  }
-
-  .mist {
-    width: 90vw;
+    background-size: 30px 30px;
   }
 }
+
 
 /* =========================================================
-   TABLET / DESKTOP
+   SMALL PHONES
    ========================================================= */
 
-@media (min-width: 481px) {
+@media (max-width: 360px) {
 
-  .page {
-    box-shadow:
-      0 0 80px rgba(72,55,35,.06);
+  .gate-welcome strong {
+    font-size: 31px;
+  }
+
+  .gate-button {
+    min-width: 195px;
+
+    font-size: 8px;
+  }
+
+  .countdown .unit {
+    min-width: 62px;
+
+    padding: 0 7px;
   }
 }
+
 
 /* =========================================================
    REDUCED MOTION
@@ -2384,43 +2065,15 @@ a {
 
 @media (prefers-reduced-motion: reduce) {
 
-  html {
-    scroll-behavior: auto;
-  }
-
   *,
   *::before,
   *::after {
     animation-duration: .01ms !important;
 
-    animation-iteration-count:
-      1 !important;
+    animation-iteration-count: 1 !important;
 
-    transition-duration:
-      .01ms !important;
-  }
+    scroll-behavior: auto !important;
 
-  .royal-gate {
-    animation:
-      gateDisappear
-      .2s
-      ease
-      forwards;
-  }
-
-  .gate-left {
-    animation:
-      gateLeftOpen
-      .2s
-      ease
-      forwards;
-  }
-
-  .gate-right {
-    animation:
-      gateRightOpen
-      .2s
-      ease
-      forwards;
+    transition-duration: .01ms !important;
   }
 }
