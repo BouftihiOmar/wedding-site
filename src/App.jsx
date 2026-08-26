@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from 'react'
 import { supabase } from './supabaseClient'
+import './app.css'
 
 const MONTHS_FR = [
   'janvier', 'février', 'mars', 'avril', 'mai', 'juin',
@@ -8,9 +9,7 @@ const MONTHS_FR = [
 
 function formatDate(dateStr) {
   if (!dateStr) return ''
-
   const d = new Date(dateStr + 'T00:00:00')
-
   return `${d.getDate()} ${MONTHS_FR[d.getMonth()]} ${d.getFullYear()}`
 }
 
@@ -19,128 +18,12 @@ function formatTime(timeStr) {
   return timeStr.slice(0, 5)
 }
 
-/* =========================================================
-   CINEMATIC PALACE GATE INTRO
-   ========================================================= */
-
-function PalaceGate({ onComplete }) {
-  const [opening, setOpening] = useState(false)
-
-  useEffect(() => {
-    const openTimer = setTimeout(() => {
-      setOpening(true)
-    }, 900)
-
-    const completeTimer = setTimeout(() => {
-      onComplete()
-    }, 3000)
-
-    return () => {
-      clearTimeout(openTimer)
-      clearTimeout(completeTimer)
-    }
-  }, [onComplete])
-
-  return (
-    <div className={`gate-intro ${opening ? 'gate-opening' : ''}`}>
-
-      {/* Lumière derrière le portail */}
-      <div className="gate-light" />
-
-      {/* Brume */}
-      <div className="gate-mist gate-mist-one" />
-      <div className="gate-mist gate-mist-two" />
-
-      {/* Décoration supérieure */}
-      <div className="gate-arch">
-
-        <div className="gate-arch-inner">
-
-          <div className="gate-star">
-            ✦
-          </div>
-
-        </div>
-
-      </div>
-
-      {/* PORTAIL GAUCHE */}
-      <div className="gate-panel gate-panel-left">
-
-        <div className="gate-panel-decoration">
-
-          <div className="gate-ornament">
-            ✦
-          </div>
-
-          <div className="gate-pattern">
-            <span />
-            <span />
-            <span />
-            <span />
-          </div>
-
-        </div>
-
-        <div className="gate-handle" />
-
-      </div>
-
-      {/* PORTAIL DROIT */}
-      <div className="gate-panel gate-panel-right">
-
-        <div className="gate-panel-decoration">
-
-          <div className="gate-ornament">
-            ✦
-          </div>
-
-          <div className="gate-pattern">
-            <span />
-            <span />
-            <span />
-            <span />
-          </div>
-
-        </div>
-
-        <div className="gate-handle" />
-
-      </div>
-
-      {/* Petit texte avant ouverture */}
-      <div className="gate-welcome">
-
-        <div className="gate-welcome-small">
-          Une invitation
-        </div>
-
-        <div className="gate-welcome-title">
-          vous attend
-        </div>
-
-        <div className="gate-welcome-line" />
-
-      </div>
-
-    </div>
-  )
-}
-
-/* =========================================================
-   SCROLL REVEAL
-   ========================================================= */
-
 function Reveal({ children, className = '' }) {
-
   const [visible, setVisible] = useState(false)
-
   const ref = useRef(null)
 
   useEffect(() => {
-
     const element = ref.current
-
     if (!element) return
 
     if (!('IntersectionObserver' in window)) {
@@ -150,15 +33,10 @@ function Reveal({ children, className = '' }) {
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-
         if (entry.isIntersecting) {
-
           setVisible(true)
-
           observer.unobserve(element)
-
         }
-
       },
       {
         threshold: 0.12,
@@ -169,7 +47,6 @@ function Reveal({ children, className = '' }) {
     observer.observe(element)
 
     return () => observer.disconnect()
-
   }, [])
 
   return (
@@ -182,12 +59,7 @@ function Reveal({ children, className = '' }) {
   )
 }
 
-/* =========================================================
-   ZELLIGE
-   ========================================================= */
-
 function ZelligeMark() {
-
   return (
     <svg
       viewBox="0 0 24 24"
@@ -195,43 +67,30 @@ function ZelligeMark() {
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden="true"
     >
-
       <path
         d="M12 2 L14.2 9.8 L22 12 L14.2 14.2 L12 22 L9.8 14.2 L2 12 L9.8 9.8 Z"
         stroke="currentColor"
         strokeWidth="1"
         strokeLinejoin="round"
       />
-
     </svg>
   )
 }
 
 function Divider() {
-
   return (
     <div className="zellige-divider">
-
       <span className="line" />
-
       <ZelligeMark />
-
       <span className="line" />
-
     </div>
   )
 }
 
-/* =========================================================
-   COUNTDOWN
-   ========================================================= */
-
 function useCountdown(targetDate, targetTime) {
-
   const [left, setLeft] = useState(null)
 
   useEffect(() => {
-
     if (!targetDate) {
       setLeft(null)
       return
@@ -242,71 +101,52 @@ function useCountdown(targetDate, targetTime) {
     )
 
     const tick = () => {
-
       const diff = target.getTime() - Date.now()
 
       if (diff <= 0) {
-
         setLeft({
           days: 0,
           hours: 0,
           minutes: 0,
         })
-
         return
       }
 
       setLeft({
-
         days: Math.floor(
           diff / (1000 * 60 * 60 * 24)
         ),
-
         hours: Math.floor(
           (diff / (1000 * 60 * 60)) % 24
         ),
-
         minutes: Math.floor(
           (diff / (1000 * 60)) % 60
         ),
-
       })
     }
 
     tick()
 
-    const id = setInterval(
-      tick,
-      60 * 1000
-    )
+    const id = setInterval(tick, 60 * 1000)
 
     return () => clearInterval(id)
-
   }, [targetDate, targetTime])
 
   return left
 }
 
-/* =========================================================
-   APP
-   ========================================================= */
-
 export default function App() {
-
   const [settings, setSettings] = useState(null)
-
   const [schedule, setSchedule] = useState([])
-
   const [loading, setLoading] = useState(true)
-
   const [error, setError] = useState(null)
 
-  const [gateFinished, setGateFinished] = useState(false)
+  // ============================================
+  // CHARGEMENT SUPABASE
+  // ============================================
 
   useEffect(() => {
-
     async function load() {
-
       const {
         data: settingsData,
         error: settingsError,
@@ -317,16 +157,12 @@ export default function App() {
         .maybeSingle()
 
       if (settingsError) {
-
         setError(settingsError.message)
-
         setLoading(false)
-
         return
       }
 
       if (settingsData) {
-
         const {
           data: scheduleData,
         } = await supabase
@@ -341,12 +177,10 @@ export default function App() {
       }
 
       setSettings(settingsData)
-
       setLoading(false)
     }
 
     load()
-
   }, [])
 
   const countdown = useCountdown(
@@ -354,399 +188,399 @@ export default function App() {
     settings?.wedding_time
   )
 
-  /* =====================================================
-     LOADING
-     ===================================================== */
+  // ============================================
+  // LOADING
+  // ============================================
 
   if (loading) {
-
     return (
       <div className="loading">
-        Un instant, l'invitation se prépare&nbsp;…
+        <div className="loading-symbol">✦</div>
+        <div>
+          Un instant, l'invitation se prépare…
+        </div>
       </div>
     )
   }
 
-  /* =====================================================
-     ERROR
-     ===================================================== */
+  // ============================================
+  // ERROR
+  // ============================================
 
   if (error) {
-
     return (
       <div className="empty-state">
-
         Impossible de charger l'invitation.
-
         <br />
-
         ({error})
-
       </div>
     )
   }
 
-  /* =====================================================
-     EMPTY
-     ===================================================== */
-
   if (!settings) {
-
     return (
       <div className="empty-state">
-
         Aucune information de mariage trouvée
         pour le moment.
-
       </div>
     )
   }
 
   return (
-    <>
+    <div className="page">
 
-      {/* =================================================
-          PORTAIL CINÉMATIQUE
-          ================================================= */}
+      {/* ==================================================
+          OPENING GATE
+          ================================================== */}
 
-      {!gateFinished && (
-        <PalaceGate
-          onComplete={() => setGateFinished(true)}
-        />
-      )}
+      <section className="gate">
 
-      {/* =================================================
-          INVITATION
-          ================================================= */}
+        <div className="gate-background">
+          <div className="gate-glow" />
+          <div className="gate-stars" />
+        </div>
 
-      <div
-        className={`page wedding-page ${
-          gateFinished ? 'page-visible' : ''
-        }`}
-      >
+        <div className="gate-title">
+          <span>Une invitation</span>
+          <strong>vous attend</strong>
+        </div>
 
-        {/* HERO */}
+        <div className="gate-arch">
 
-        <section className="hero">
-
-          <div className="eyebrow">
-            Nous nous marions
+          <div className="arch-top">
+            <div className="arch-decoration">
+              ✦
+            </div>
           </div>
 
-          <p className="initials">
+          <div className="gate-door gate-door-left">
 
-            {settings.initials ||
-              `${settings.groom_name?.[0] || ''} & ${
-                settings.bride_name?.[0] || ''
-              }`}
-
-          </p>
-
-          <p className="names">
-
-            {settings.groom_name}
-            {' '}
-            &amp;
-            {' '}
-            {settings.bride_name}
-
-          </p>
-
-          {settings.wedding_quote && (
-
-            <p className="quote">
-
-              {settings.wedding_quote}
-
-            </p>
-
-          )}
-
-          {settings.wedding_date && (
-
-            <div className="date-pill">
-
-              {formatDate(settings.wedding_date)}
-
+            <div className="door-pattern">
+              <div className="door-star">✦</div>
+              <div className="door-pattern-line" />
+              <div className="door-small-star">✦</div>
             </div>
 
-          )}
+            <div className="door-handle" />
 
-          {countdown && (
+          </div>
 
-            <div className="countdown">
+          <div className="gate-door gate-door-right">
 
-              <div className="unit">
-
-                <div className="value">
-                  {countdown.days}
-                </div>
-
-                <div className="label">
-                  jours
-                </div>
-
-              </div>
-
-              <div className="unit">
-
-                <div className="value">
-                  {countdown.hours}
-                </div>
-
-                <div className="label">
-                  heures
-                </div>
-
-              </div>
-
-              <div className="unit">
-
-                <div className="value">
-                  {countdown.minutes}
-                </div>
-
-                <div className="label">
-                  minutes
-                </div>
-
-              </div>
-
+            <div className="door-pattern">
+              <div className="door-star">✦</div>
+              <div className="door-pattern-line" />
+              <div className="door-small-star">✦</div>
             </div>
 
-          )}
+            <div className="door-handle" />
 
-        </section>
+          </div>
 
-        <Divider />
+          <div className="gate-inside">
 
-        {/* MESSAGE */}
+            <div className="garden-glow" />
 
-        {(settings.invitation_message ||
-          settings.couple_description) && (
+            <div className="garden-stars">
+              ✦
+            </div>
 
-          <Reveal>
+            <div className="gate-inside-text">
+              <span>Bienvenue</span>
+            </div>
 
-            <section className="section">
+          </div>
 
-              <p
-                className="quote"
-                style={{
-                  margin: '0 auto',
-                  maxWidth: 480,
-                }}
-              >
+        </div>
 
-                {settings.invitation_message ||
-                  settings.couple_description}
+        <div className="gate-hint">
+          <span>Découvrez notre histoire</span>
+          <div className="gate-arrow">↓</div>
+        </div>
 
-              </p>
+      </section>
 
-            </section>
+      {/* ==================================================
+          HERO
+          ================================================== */}
 
-          </Reveal>
+      <section className="hero">
 
+        <div className="eyebrow">
+          Nous nous marions
+        </div>
+
+        <p className="initials">
+          {settings.initials ||
+            `${settings.groom_name?.[0] || ''} & ${settings.bride_name?.[0] || ''}`}
+        </p>
+
+        <p className="names">
+          {settings.groom_name} &amp; {settings.bride_name}
+        </p>
+
+        {settings.wedding_quote && (
+          <p className="quote">
+            {settings.wedding_quote}
+          </p>
         )}
 
-        <Divider />
+        {settings.wedding_date && (
+          <div className="date-pill">
+            {formatDate(settings.wedding_date)}
+          </div>
+        )}
 
-        {/* DÉTAILS */}
+        {countdown && (
+          <div className="countdown">
+
+            <div className="unit">
+              <div className="value">
+                {countdown.days}
+              </div>
+              <div className="label">
+                jours
+              </div>
+            </div>
+
+            <div className="unit">
+              <div className="value">
+                {countdown.hours}
+              </div>
+              <div className="label">
+                heures
+              </div>
+            </div>
+
+            <div className="unit">
+              <div className="value">
+                {countdown.minutes}
+              </div>
+              <div className="label">
+                minutes
+              </div>
+            </div>
+
+          </div>
+        )}
+
+      </section>
+
+      <Divider />
+
+      {/* ==================================================
+          MESSAGE
+          ================================================== */}
+
+      {(settings.invitation_message ||
+        settings.couple_description) && (
 
         <Reveal>
 
           <section className="section">
 
-            <h2 className="heading">
-              Le grand jour
-            </h2>
-
-            <p className="subheading">
-              Retrouvez-nous pour célébrer ensemble
+            <p
+              className="quote"
+              style={{
+                margin: '0 auto',
+                maxWidth: 480,
+              }}
+            >
+              {settings.invitation_message ||
+                settings.couple_description}
             </p>
-
-            <div className="details-grid">
-
-              <div className="detail-card">
-
-                <div className="label">
-                  Date &amp; heure
-                </div>
-
-                <div className="value">
-                  {formatDate(settings.wedding_date)}
-                </div>
-
-                {settings.wedding_time && (
-
-                  <div className="sub">
-                    à {formatTime(settings.wedding_time)}
-                  </div>
-
-                )}
-
-              </div>
-
-              {settings.venue_name && (
-
-                <div className="detail-card">
-
-                  <div className="label">
-                    Lieu
-                  </div>
-
-                  <div className="value">
-                    {settings.venue_name}
-                  </div>
-
-                  {(settings.address ||
-                    settings.city) && (
-
-                    <div className="sub">
-
-                      {[
-                        settings.address,
-                        settings.city,
-                        settings.country,
-                      ]
-                        .filter(Boolean)
-                        .join(', ')}
-
-                    </div>
-
-                  )}
-
-                  {settings.maps_url && (
-
-                    <a
-                      className="maps-link"
-                      href={settings.maps_url}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      Voir sur la carte
-                    </a>
-
-                  )}
-
-                </div>
-
-              )}
-
-              {settings.dress_code && (
-
-                <div className="detail-card">
-
-                  <div className="label">
-                    Dress code
-                  </div>
-
-                  <div className="value">
-                    {settings.dress_code}
-                  </div>
-
-                </div>
-
-              )}
-
-            </div>
 
           </section>
 
         </Reveal>
+      )}
 
-        {/* PROGRAMME */}
+      <Divider />
 
-        {schedule.length > 0 && (
+      {/* ==================================================
+          DÉTAILS
+          ================================================== */}
 
-          <>
+      <Reveal>
 
-            <Divider />
+        <section className="section">
 
-            <Reveal>
+          <h2 className="heading">
+            Le grand jour
+          </h2>
 
-              <section className="section">
+          <p className="subheading">
+            Retrouvez-nous pour célébrer ensemble
+          </p>
 
-                <h2 className="heading">
-                  Le déroulé
-                </h2>
+          <div className="details-grid">
 
-                <p className="subheading">
-                  Une journée à vivre ensemble
-                </p>
+            <div className="detail-card">
 
-                <div className="timeline">
+              <div className="label">
+                Date &amp; heure
+              </div>
 
-                  {schedule.map((item) => (
+              <div className="value">
+                {formatDate(settings.wedding_date)}
+              </div>
 
-                    <div
-                      className="timeline-item"
-                      key={item.id}
-                    >
+              {settings.wedding_time && (
+                <div className="sub">
+                  à {formatTime(settings.wedding_time)}
+                </div>
+              )}
 
-                      <div className="time">
-                        {formatTime(item.time)}
-                      </div>
+            </div>
 
-                      <div className="rail" />
+            {settings.venue_name && (
 
-                      <div>
+              <div className="detail-card">
 
-                        <p className="title">
-                          {item.title}
+                <div className="label">
+                  Lieu
+                </div>
+
+                <div className="value">
+                  {settings.venue_name}
+                </div>
+
+                {(settings.address ||
+                  settings.city) && (
+
+                  <div className="sub">
+                    {[
+                      settings.address,
+                      settings.city,
+                      settings.country,
+                    ]
+                      .filter(Boolean)
+                      .join(', ')}
+                  </div>
+                )}
+
+                {settings.maps_url && (
+                  <a
+                    className="maps-link"
+                    href={settings.maps_url}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Voir sur la carte
+                  </a>
+                )}
+
+              </div>
+            )}
+
+            {settings.dress_code && (
+
+              <div className="detail-card">
+
+                <div className="label">
+                  Dress code
+                </div>
+
+                <div className="value">
+                  {settings.dress_code}
+                </div>
+
+              </div>
+            )}
+
+          </div>
+
+        </section>
+
+      </Reveal>
+
+      {/* ==================================================
+          PROGRAMME
+          ================================================== */}
+
+      {schedule.length > 0 && (
+
+        <>
+          <Divider />
+
+          <Reveal>
+
+            <section className="section">
+
+              <h2 className="heading">
+                Le déroulé
+              </h2>
+
+              <p className="subheading">
+                Une journée à vivre ensemble
+              </p>
+
+              <div className="timeline">
+
+                {schedule.map((item) => (
+
+                  <div
+                    className="timeline-item"
+                    key={item.id}
+                  >
+
+                    <div className="time">
+                      {formatTime(item.time)}
+                    </div>
+
+                    <div className="rail" />
+
+                    <div>
+
+                      <p className="title">
+                        {item.title}
+                      </p>
+
+                      {item.description && (
+                        <p className="desc">
+                          {item.description}
                         </p>
-
-                        {item.description && (
-
-                          <p className="desc">
-                            {item.description}
-                          </p>
-
-                        )}
-
-                      </div>
+                      )}
 
                     </div>
 
-                  ))}
+                  </div>
 
-                </div>
+                ))}
 
-              </section>
+              </div>
 
-            </Reveal>
+            </section>
 
-          </>
+          </Reveal>
+        </>
 
-        )}
+      )}
 
-        <Divider />
+      <Divider />
 
-        {/* FOOTER */}
+      {/* ==================================================
+          FOOTER
+          ================================================== */}
 
-        <Reveal>
+      <Reveal>
 
-          <footer className="footer">
+        <footer className="footer">
 
-            <p className="signoff">
+          <p className="signoff">
+            {settings.final_message ||
+              'Avec amour, à très bientôt.'}
+          </p>
 
-              {settings.final_message ||
-                'Avec amour, à très bientôt.'}
+          <p className="small">
+            {settings.footer_text ||
+              `${settings.groom_name} & ${settings.bride_name}`}
+          </p>
 
-            </p>
+        </footer>
 
-            <p className="small">
+      </Reveal>
 
-              {settings.footer_text ||
-                `${settings.groom_name} & ${settings.bride_name}`}
-
-            </p>
-
-          </footer>
-
-        </Reveal>
-
-      </div>
-
-    </>
+    </div>
   )
 }
