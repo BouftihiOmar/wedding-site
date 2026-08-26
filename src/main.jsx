@@ -11,4 +11,14 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     {isAdmin ? <Admin /> : <App />}
   </React.StrictMode>,
+  /* TEST — if you see this, index.css is connected */
+
+.hero {
+  background: red !important;
+}
+
+.hero .names {
+  color: blue !important;
+  font-size: 50px !important;
+}
 )
