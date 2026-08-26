@@ -18,12 +18,17 @@ function formatTime(timeStr) {
   return timeStr.slice(0, 5)
 }
 
+// ======================================================
+// SCROLL REVEAL
+// ======================================================
+
 function Reveal({ children, className = '' }) {
   const [visible, setVisible] = useState(false)
   const ref = useRef(null)
 
   useEffect(() => {
     const element = ref.current
+
     if (!element) return
 
     if (!('IntersectionObserver' in window)) {
@@ -59,6 +64,10 @@ function Reveal({ children, className = '' }) {
   )
 }
 
+// ======================================================
+// ZELLIGE
+// ======================================================
+
 function ZelligeMark() {
   return (
     <svg
@@ -86,6 +95,10 @@ function Divider() {
     </div>
   )
 }
+
+// ======================================================
+// COUNTDOWN
+// ======================================================
 
 function useCountdown(targetDate, targetTime) {
   const [left, setLeft] = useState(null)
@@ -135,18 +148,196 @@ function useCountdown(targetDate, targetTime) {
   return left
 }
 
+// ======================================================
+// OPENING GATE
+// ======================================================
+
+function OpeningGate({ settings, onOpen }) {
+  const [opening, setOpening] = useState(false)
+
+  const groomInitial =
+    settings?.groom_name?.trim()?.[0] || ''
+
+  const brideInitial =
+    settings?.bride_name?.trim()?.[0] || ''
+
+  const initials =
+    settings?.initials ||
+    `${groomInitial} & ${brideInitial}`
+
+  const openGate = () => {
+    if (opening) return
+
+    setOpening(true)
+
+    // نعطيو للباب الوقت باش يكمل animation
+    setTimeout(() => {
+      onOpen()
+    }, 1500)
+  }
+
+  return (
+    <div
+      className={`opening-gate ${
+        opening ? 'opening-gate-open' : ''
+      }`}
+      onClick={openGate}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault()
+          openGate()
+        }
+      }}
+      aria-label="Ouvrir l'invitation"
+    >
+
+      {/* الضوء اللي جاي من ورا الباب */}
+      <div className="gate-light" />
+
+      {/* هالة ذهبية */}
+      <div className="gate-glow" />
+
+      {/* ==================================================
+          LEFT DOOR
+          ================================================== */}
+
+      <div className="gate-door gate-door-left">
+
+        <div className="gate-arch" />
+
+        <div className="gate-panel">
+
+          <div className="gate-zellige gate-zellige-top">
+            <ZelligeMark />
+            <ZelligeMark />
+            <ZelligeMark />
+          </div>
+
+          <div className="gate-decoration">
+
+            <span className="diamond diamond-1" />
+            <span className="diamond diamond-2" />
+            <span className="diamond diamond-3" />
+
+            <div className="gate-star">
+              <ZelligeMark />
+            </div>
+
+          </div>
+
+          <div className="gate-border" />
+
+        </div>
+      </div>
+
+      {/* ==================================================
+          RIGHT DOOR
+          ================================================== */}
+
+      <div className="gate-door gate-door-right">
+
+        <div className="gate-arch" />
+
+        <div className="gate-panel">
+
+          <div className="gate-zellige gate-zellige-top">
+            <ZelligeMark />
+            <ZelligeMark />
+            <ZelligeMark />
+          </div>
+
+          <div className="gate-decoration">
+
+            <span className="diamond diamond-1" />
+            <span className="diamond diamond-2" />
+            <span className="diamond diamond-3" />
+
+            <div className="gate-star">
+              <ZelligeMark />
+            </div>
+
+          </div>
+
+          <div className="gate-border" />
+
+        </div>
+      </div>
+
+      {/* ==================================================
+          CONTENT AU CENTRE DU PORTAIL
+          ================================================== */}
+
+      <div className="gate-content">
+
+        <div className="gate-eyebrow">
+          Une invitation
+        </div>
+
+        <div className="gate-monogram">
+          {initials}
+        </div>
+
+        <div className="gate-names">
+          <span>{settings?.groom_name}</span>
+          <i>&</i>
+          <span>{settings?.bride_name}</span>
+        </div>
+
+        {settings?.wedding_date && (
+          <div className="gate-date">
+            {formatDate(settings.wedding_date)}
+          </div>
+        )}
+
+        <div className="gate-open-hint">
+          <span className="gate-hint-line" />
+          <span>Toucher pour ouvrir</span>
+          <span className="gate-hint-line" />
+        </div>
+
+      </div>
+
+      {/* زخارف أمامية */}
+      <div className="gate-corner gate-corner-tl">
+        <ZelligeMark />
+      </div>
+
+      <div className="gate-corner gate-corner-tr">
+        <ZelligeMark />
+      </div>
+
+      <div className="gate-corner gate-corner-bl">
+        <ZelligeMark />
+      </div>
+
+      <div className="gate-corner gate-corner-br">
+        <ZelligeMark />
+      </div>
+
+    </div>
+  )
+}
+
+// ======================================================
+// APP
+// ======================================================
+
 export default function App() {
+
   const [settings, setSettings] = useState(null)
   const [schedule, setSchedule] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
-  // ============================================
-  // CHARGEMENT SUPABASE
-  // ============================================
+  // الباب يكون ظاهر في البداية
+  const [gateOpened, setGateOpened] = useState(false)
 
   useEffect(() => {
+
     async function load() {
+
       const {
         data: settingsData,
         error: settingsError,
@@ -163,6 +354,7 @@ export default function App() {
       }
 
       if (settingsData) {
+
         const {
           data: scheduleData,
         } = await supabase
@@ -181,6 +373,7 @@ export default function App() {
     }
 
     load()
+
   }, [])
 
   const countdown = useCountdown(
@@ -188,24 +381,21 @@ export default function App() {
     settings?.wedding_time
   )
 
-  // ============================================
+  // ======================================================
   // LOADING
-  // ============================================
+  // ======================================================
 
   if (loading) {
     return (
       <div className="loading">
-        <div className="loading-symbol">✦</div>
-        <div>
-          Un instant, l'invitation se prépare…
-        </div>
+        Un instant, l'invitation se prépare&nbsp;…
       </div>
     )
   }
 
-  // ============================================
+  // ======================================================
   // ERROR
-  // ============================================
+  // ======================================================
 
   if (error) {
     return (
@@ -217,6 +407,10 @@ export default function App() {
     )
   }
 
+  // ======================================================
+  // NO WEDDING
+  // ======================================================
+
   if (!settings) {
     return (
       <div className="empty-state">
@@ -227,360 +421,314 @@ export default function App() {
   }
 
   return (
-    <div className="page">
-
+    <>
       {/* ==================================================
           OPENING GATE
           ================================================== */}
 
-      <section className="gate">
-
-        <div className="gate-background">
-          <div className="gate-glow" />
-          <div className="gate-stars" />
-        </div>
-
-        <div className="gate-title">
-          <span>Une invitation</span>
-          <strong>vous attend</strong>
-        </div>
-
-        <div className="gate-arch">
-
-          <div className="arch-top">
-            <div className="arch-decoration">
-              ✦
-            </div>
-          </div>
-
-          <div className="gate-door gate-door-left">
-
-            <div className="door-pattern">
-              <div className="door-star">✦</div>
-              <div className="door-pattern-line" />
-              <div className="door-small-star">✦</div>
-            </div>
-
-            <div className="door-handle" />
-
-          </div>
-
-          <div className="gate-door gate-door-right">
-
-            <div className="door-pattern">
-              <div className="door-star">✦</div>
-              <div className="door-pattern-line" />
-              <div className="door-small-star">✦</div>
-            </div>
-
-            <div className="door-handle" />
-
-          </div>
-
-          <div className="gate-inside">
-
-            <div className="garden-glow" />
-
-            <div className="garden-stars">
-              ✦
-            </div>
-
-            <div className="gate-inside-text">
-              <span>Bienvenue</span>
-            </div>
-
-          </div>
-
-        </div>
-
-        <div className="gate-hint">
-          <span>Découvrez notre histoire</span>
-          <div className="gate-arrow">↓</div>
-        </div>
-
-      </section>
-
-      {/* ==================================================
-          HERO
-          ================================================== */}
-
-      <section className="hero">
-
-        <div className="eyebrow">
-          Nous nous marions
-        </div>
-
-        <p className="initials">
-          {settings.initials ||
-            `${settings.groom_name?.[0] || ''} & ${settings.bride_name?.[0] || ''}`}
-        </p>
-
-        <p className="names">
-          {settings.groom_name} &amp; {settings.bride_name}
-        </p>
-
-        {settings.wedding_quote && (
-          <p className="quote">
-            {settings.wedding_quote}
-          </p>
-        )}
-
-        {settings.wedding_date && (
-          <div className="date-pill">
-            {formatDate(settings.wedding_date)}
-          </div>
-        )}
-
-        {countdown && (
-          <div className="countdown">
-
-            <div className="unit">
-              <div className="value">
-                {countdown.days}
-              </div>
-              <div className="label">
-                jours
-              </div>
-            </div>
-
-            <div className="unit">
-              <div className="value">
-                {countdown.hours}
-              </div>
-              <div className="label">
-                heures
-              </div>
-            </div>
-
-            <div className="unit">
-              <div className="value">
-                {countdown.minutes}
-              </div>
-              <div className="label">
-                minutes
-              </div>
-            </div>
-
-          </div>
-        )}
-
-      </section>
-
-      <Divider />
-
-      {/* ==================================================
-          MESSAGE
-          ================================================== */}
-
-      {(settings.invitation_message ||
-        settings.couple_description) && (
-
-        <Reveal>
-
-          <section className="section">
-
-            <p
-              className="quote"
-              style={{
-                margin: '0 auto',
-                maxWidth: 480,
-              }}
-            >
-              {settings.invitation_message ||
-                settings.couple_description}
-            </p>
-
-          </section>
-
-        </Reveal>
+      {!gateOpened && (
+        <OpeningGate
+          settings={settings}
+          onOpen={() => setGateOpened(true)}
+        />
       )}
 
-      <Divider />
-
       {/* ==================================================
-          DÉTAILS
+          INVITATION
           ================================================== */}
 
-      <Reveal>
+      <div
+        className={`page ${
+          gateOpened ? 'invitation-visible' : 'invitation-hidden'
+        }`}
+      >
 
-        <section className="section">
+        {/* ==================================================
+            HERO
+            ================================================== */}
 
-          <h2 className="heading">
-            Le grand jour
-          </h2>
+        <section className="hero">
 
-          <p className="subheading">
-            Retrouvez-nous pour célébrer ensemble
+          <div className="eyebrow">
+            Nous nous marions
+          </div>
+
+          <p className="initials">
+            {settings.initials ||
+              `${settings.groom_name?.[0] || ''} & ${settings.bride_name?.[0] || ''}`}
           </p>
 
-          <div className="details-grid">
+          <p className="names">
+            {settings.groom_name} &amp; {settings.bride_name}
+          </p>
 
-            <div className="detail-card">
+          {settings.wedding_quote && (
+            <p className="quote">
+              {settings.wedding_quote}
+            </p>
+          )}
 
-              <div className="label">
-                Date &amp; heure
-              </div>
+          {settings.wedding_date && (
+            <div className="date-pill">
+              {formatDate(settings.wedding_date)}
+            </div>
+          )}
 
-              <div className="value">
-                {formatDate(settings.wedding_date)}
-              </div>
+          {countdown && (
+            <div className="countdown">
 
-              {settings.wedding_time && (
-                <div className="sub">
-                  à {formatTime(settings.wedding_time)}
+              <div className="unit">
+                <div className="value">
+                  {countdown.days}
                 </div>
-              )}
+                <div className="label">
+                  jours
+                </div>
+              </div>
+
+              <div className="unit">
+                <div className="value">
+                  {countdown.hours}
+                </div>
+                <div className="label">
+                  heures
+                </div>
+              </div>
+
+              <div className="unit">
+                <div className="value">
+                  {countdown.minutes}
+                </div>
+                <div className="label">
+                  minutes
+                </div>
+              </div>
 
             </div>
-
-            {settings.venue_name && (
-
-              <div className="detail-card">
-
-                <div className="label">
-                  Lieu
-                </div>
-
-                <div className="value">
-                  {settings.venue_name}
-                </div>
-
-                {(settings.address ||
-                  settings.city) && (
-
-                  <div className="sub">
-                    {[
-                      settings.address,
-                      settings.city,
-                      settings.country,
-                    ]
-                      .filter(Boolean)
-                      .join(', ')}
-                  </div>
-                )}
-
-                {settings.maps_url && (
-                  <a
-                    className="maps-link"
-                    href={settings.maps_url}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    Voir sur la carte
-                  </a>
-                )}
-
-              </div>
-            )}
-
-            {settings.dress_code && (
-
-              <div className="detail-card">
-
-                <div className="label">
-                  Dress code
-                </div>
-
-                <div className="value">
-                  {settings.dress_code}
-                </div>
-
-              </div>
-            )}
-
-          </div>
+          )}
 
         </section>
 
-      </Reveal>
+        <Divider />
 
-      {/* ==================================================
-          PROGRAMME
-          ================================================== */}
+        {/* ==================================================
+            MESSAGE
+            ================================================== */}
 
-      {schedule.length > 0 && (
-
-        <>
-          <Divider />
+        {(settings.invitation_message ||
+          settings.couple_description) && (
 
           <Reveal>
 
             <section className="section">
 
-              <h2 className="heading">
-                Le déroulé
-              </h2>
-
-              <p className="subheading">
-                Une journée à vivre ensemble
+              <p
+                className="quote"
+                style={{
+                  margin: '0 auto',
+                  maxWidth: 480,
+                }}
+              >
+                {settings.invitation_message ||
+                  settings.couple_description}
               </p>
-
-              <div className="timeline">
-
-                {schedule.map((item) => (
-
-                  <div
-                    className="timeline-item"
-                    key={item.id}
-                  >
-
-                    <div className="time">
-                      {formatTime(item.time)}
-                    </div>
-
-                    <div className="rail" />
-
-                    <div>
-
-                      <p className="title">
-                        {item.title}
-                      </p>
-
-                      {item.description && (
-                        <p className="desc">
-                          {item.description}
-                        </p>
-                      )}
-
-                    </div>
-
-                  </div>
-
-                ))}
-
-              </div>
 
             </section>
 
           </Reveal>
-        </>
+        )}
 
-      )}
+        <Divider />
 
-      <Divider />
+        {/* ==================================================
+            DÉTAILS
+            ================================================== */}
 
-      {/* ==================================================
-          FOOTER
-          ================================================== */}
+        <Reveal>
 
-      <Reveal>
+          <section className="section">
 
-        <footer className="footer">
+            <h2 className="heading">
+              Le grand jour
+            </h2>
 
-          <p className="signoff">
-            {settings.final_message ||
-              'Avec amour, à très bientôt.'}
-          </p>
+            <p className="subheading">
+              Retrouvez-nous pour célébrer ensemble
+            </p>
 
-          <p className="small">
-            {settings.footer_text ||
-              `${settings.groom_name} & ${settings.bride_name}`}
-          </p>
+            <div className="details-grid">
 
-        </footer>
+              {/* DATE */}
 
-      </Reveal>
+              <div className="detail-card">
 
-    </div>
+                <div className="label">
+                  Date &amp; heure
+                </div>
+
+                <div className="value">
+                  {formatDate(settings.wedding_date)}
+                </div>
+
+                {settings.wedding_time && (
+                  <div className="sub">
+                    à {formatTime(settings.wedding_time)}
+                  </div>
+                )}
+
+              </div>
+
+              {/* LIEU */}
+
+              {settings.venue_name && (
+                <div className="detail-card">
+
+                  <div className="label">
+                    Lieu
+                  </div>
+
+                  <div className="value">
+                    {settings.venue_name}
+                  </div>
+
+                  {(settings.address ||
+                    settings.city) && (
+
+                    <div className="sub">
+
+                      {[
+                        settings.address,
+                        settings.city,
+                        settings.country,
+                      ]
+                        .filter(Boolean)
+                        .join(', ')}
+
+                    </div>
+                  )}
+
+                  {settings.maps_url && (
+                    <a
+                      className="maps-link"
+                      href={settings.maps_url}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Voir sur la carte
+                    </a>
+                  )}
+
+                </div>
+              )}
+
+              {/* DRESS CODE */}
+
+              {settings.dress_code && (
+                <div className="detail-card">
+
+                  <div className="label">
+                    Dress code
+                  </div>
+
+                  <div className="value">
+                    {settings.dress_code}
+                  </div>
+
+                </div>
+              )}
+
+            </div>
+
+          </section>
+
+        </Reveal>
+
+        {/* ==================================================
+            PROGRAMME
+            ================================================== */}
+
+        {schedule.length > 0 && (
+          <>
+            <Divider />
+
+            <Reveal>
+
+              <section className="section">
+
+                <h2 className="heading">
+                  Le déroulé
+                </h2>
+
+                <p className="subheading">
+                  Une journée à vivre ensemble
+                </p>
+
+                <div className="timeline">
+
+                  {schedule.map((item) => (
+
+                    <div
+                      className="timeline-item"
+                      key={item.id}
+                    >
+
+                      <div className="time">
+                        {formatTime(item.time)}
+                      </div>
+
+                      <div className="rail" />
+
+                      <div>
+
+                        <p className="title">
+                          {item.title}
+                        </p>
+
+                        {item.description && (
+                          <p className="desc">
+                            {item.description}
+                          </p>
+                        )}
+
+                      </div>
+
+                    </div>
+
+                  ))}
+
+                </div>
+
+              </section>
+
+            </Reveal>
+          </>
+        )}
+
+        <Divider />
+
+        {/* ==================================================
+            FOOTER
+            ================================================== */}
+
+        <Reveal>
+
+          <footer className="footer">
+
+            <p className="signoff">
+              {settings.final_message ||
+                'Avec amour, à très bientôt.'}
+            </p>
+
+            <p className="small">
+              {settings.footer_text ||
+                `${settings.groom_name} & ${settings.bride_name}`}
+            </p>
+
+          </footer>
+
+        </Reveal>
+
+      </div>
+    </>
   )
 }
