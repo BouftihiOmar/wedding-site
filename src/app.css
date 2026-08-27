@@ -10,10 +10,17 @@
   --color-gold-light: #f2e0b8;
   --color-emerald: #3b2a14;
   --color-clay: #8b4a3d;
+  --color-door-dark: #1c140a;
+  --color-door-light: #4a3418;
 
   --font-display: 'Marcellus', serif;
   --font-script: 'Cormorant Garamond', serif;
   --font-body: 'Jost', sans-serif;
+
+  /* Vitesses d'animation (en secondes) - modifiables depuis l'admin */
+  --speed-door: 1.8s;
+  --speed-reveal: 1s;
+  --speed-glow: 5s;
 }
 
 * {
@@ -71,7 +78,7 @@ button {
   inset: 0;
   background:
     radial-gradient(ellipse at center, rgba(230, 205, 160, 0.28), transparent 34%),
-    linear-gradient(90deg, #150f08, #3b2a14 50%, #150f08);
+    linear-gradient(90deg, var(--color-door-dark), var(--color-emerald) 50%, var(--color-door-dark));
 }
 
 .gate-glow {
@@ -87,7 +94,7 @@ button {
   background:
     radial-gradient(circle, rgba(239, 216, 176, 0.32), rgba(184, 147, 90, 0.10) 35%, transparent 70%);
   filter: blur(20px);
-  animation: gateGlow 5s ease-in-out infinite;
+  animation: gateGlow var(--speed-glow) ease-in-out infinite;
 }
 
 .gate-door {
@@ -98,14 +105,14 @@ button {
   overflow: hidden;
   background:
     linear-gradient(90deg, rgba(255,255,255,0.03), transparent 20%, rgba(0,0,0,0.13)),
-    linear-gradient(135deg, #1c140a, #4a3418 45%, #1c140a);
+    linear-gradient(135deg, var(--color-door-dark), var(--color-door-light) 45%, var(--color-door-dark));
   border: 1px solid rgba(184, 147, 90, 0.55);
   box-shadow:
     inset 0 0 80px rgba(0,0,0,0.28),
     inset 0 0 0 10px rgba(184,147,90,0.05);
   transition:
-    transform 1.8s cubic-bezier(.77,0,.18,1),
-    box-shadow 1.8s ease;
+    transform var(--speed-door) cubic-bezier(.77,0,.18,1),
+    box-shadow var(--speed-door) ease;
 }
 
 .gate-left {
@@ -394,7 +401,7 @@ button {
   margin: 0;
   opacity: 0;
   transform: scale(.82);
-  animation: initialsReveal 1.35s cubic-bezier(.16,1,.3,1) .30s forwards;
+  animation: initialsReveal calc(var(--speed-reveal) * 1.35) cubic-bezier(.16,1,.3,1) .30s forwards;
 }
 
 .hero .initials::before {
@@ -434,7 +441,7 @@ button {
   margin: 0 0 25px;
   opacity: 0;
   transform: translateY(15px);
-  animation: heroReveal 1s cubic-bezier(.22,1,.36,1) .15s forwards;
+  animation: heroReveal var(--speed-reveal) cubic-bezier(.22,1,.36,1) .15s forwards;
 }
 
 .hero .eyebrow::before,
@@ -460,7 +467,7 @@ button {
   margin: 39px 0 0;
   opacity: 0;
   transform: translateY(20px);
-  animation: heroReveal 1s cubic-bezier(.22,1,.36,1) .72s forwards;
+  animation: heroReveal var(--speed-reveal) cubic-bezier(.22,1,.36,1) .72s forwards;
 }
 
 .hero .quote {
@@ -473,7 +480,7 @@ button {
   line-height: 1.65;
   opacity: 0;
   transform: translateY(18px);
-  animation: heroReveal 1s cubic-bezier(.22,1,.36,1) .98s forwards;
+  animation: heroReveal var(--speed-reveal) cubic-bezier(.22,1,.36,1) .98s forwards;
 }
 
 .hero .date-pill {
@@ -492,7 +499,7 @@ button {
   box-shadow: 0 5px 25px rgba(184,147,90,.06);
   opacity: 0;
   transform: translateY(18px);
-  animation: heroReveal 1s cubic-bezier(.22,1,.36,1) 1.18s forwards;
+  animation: heroReveal var(--speed-reveal) cubic-bezier(.22,1,.36,1) 1.18s forwards;
 }
 
 .countdown {
@@ -502,7 +509,7 @@ button {
   margin-top: 40px;
   opacity: 0;
   transform: translateY(20px);
-  animation: heroReveal 1s cubic-bezier(.22,1,.36,1) 1.42s forwards;
+  animation: heroReveal var(--speed-reveal) cubic-bezier(.22,1,.36,1) 1.42s forwards;
 }
 
 .countdown .unit {
@@ -546,7 +553,7 @@ button {
   padding: 30px 24px;
   color: var(--color-gold);
   opacity: 0;
-  animation: dividerReveal 1s ease forwards;
+  animation: dividerReveal var(--speed-reveal) ease forwards;
 }
 
 .zellige-divider .line {
@@ -555,7 +562,7 @@ button {
   max-width: 150px;
   background: linear-gradient(90deg, transparent, var(--color-gold-soft), transparent);
   transform: scaleX(0);
-  animation: lineExpand 1s cubic-bezier(.22,1,.36,1) forwards;
+  animation: lineExpand var(--speed-reveal) cubic-bezier(.22,1,.36,1) forwards;
 }
 
 .zellige-divider svg {
@@ -563,7 +570,7 @@ button {
   height: 24px;
   flex-shrink: 0;
   filter: drop-shadow(0 0 5px rgba(184,147,90,.25));
-  animation: starReveal 1s cubic-bezier(.16,1,.3,1) forwards;
+  animation: starReveal var(--speed-reveal) cubic-bezier(.16,1,.3,1) forwards;
 }
 
 .section {
@@ -770,7 +777,7 @@ button {
 .reveal {
   opacity: 0;
   transform: translateY(35px);
-  transition: opacity .9s ease, transform .9s cubic-bezier(.22,1,.36,1);
+  transition: opacity var(--speed-reveal) ease, transform var(--speed-reveal) cubic-bezier(.22,1,.36,1);
 }
 
 .reveal-visible { opacity: 1; transform: translateY(0); }
