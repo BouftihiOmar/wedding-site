@@ -277,6 +277,9 @@ export default function App() {
         {/* الخلفية */}
         <div className="gate-background">
           <div className="gate-glow" />
+          <div className="gate-sparkles">
+  <span /><span /><span /><span /><span /><span />
+</div>
         </div>
 
         {/* الباب اليسر */}
