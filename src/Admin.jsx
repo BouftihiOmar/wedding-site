@@ -1,5 +1,26 @@
 import { useEffect, useState } from 'react'
 import { supabase } from './supabaseClient'
+import ThemeInjector from './ThemeInjector'
+
+const COLOR_FIELDS = [
+  { key: 'color_bg', label: 'Fond général (background)' },
+  { key: 'color_bg_deep', label: 'Fond dégradé (footer)' },
+  { key: 'color_emerald', label: 'Couleur principale (titres, boutons)' },
+  { key: 'color_gold', label: 'Doré (accents, motifs)' },
+  { key: 'color_gold_soft', label: 'Doré clair (bordures)' },
+  { key: 'color_gold_light', label: 'Doré très clair' },
+  { key: 'color_clay', label: 'Terracotta (labels)' },
+  { key: 'color_ink', label: 'Texte principal' },
+  { key: 'color_ink_soft', label: 'Texte secondaire' },
+  { key: 'color_door_dark', label: 'Porte — teinte foncée' },
+  { key: 'color_door_light', label: 'Porte — teinte claire' },
+]
+
+const SPEED_FIELDS = [
+  { key: 'anim_door_speed', label: "Vitesse d'ouverture de la porte (secondes)", min: 0.3, max: 4, step: 0.1 },
+  { key: 'anim_reveal_speed', label: 'Vitesse des animations de la page (secondes)', min: 0.2, max: 3, step: 0.1 },
+  { key: 'anim_glow_speed', label: 'Vitesse de la lueur derrière la porte (secondes)', min: 1, max: 10, step: 0.5 },
+]
 
 function LoginForm({ onLoggedIn }) {
   const [email, setEmail] = useState('')
@@ -126,6 +147,9 @@ function Dashboard() {
 
   return (
     <div className="admin-shell">
+      {/* Aperçu live : applique les couleurs/vitesses pendant qu'on les modifie */}
+      <ThemeInjector settings={settings} />
+
       <header className="admin-header">
         <h1>Espace Administration</h1>
         <button className="admin-btn-ghost" onClick={handleLogout}>
@@ -134,6 +158,57 @@ function Dashboard() {
       </header>
 
       <form className="admin-form" onSubmit={handleSave}>
+        <section className="admin-section">
+          <h2>Personnalisation — Couleurs</h2>
+          <div className="admin-grid">
+            {COLOR_FIELDS.map(({ key, label }) => (
+              <label className="admin-field" key={key}>
+                <span>{label}</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <input
+                    type="color"
+                    value={settings[key] || '#ffffff'}
+                    onChange={(e) => update(key, e.target.value)}
+                    style={{
+                      width: 42,
+                      height: 36,
+                      padding: 2,
+                      border: '1px solid var(--color-gold-soft)',
+                      borderRadius: 4,
+                      cursor: 'pointer',
+                    }}
+                  />
+                  <input
+                    type="text"
+                    value={settings[key] || ''}
+                    onChange={(e) => update(key, e.target.value)}
+                    style={{ flex: 1 }}
+                  />
+                </div>
+              </label>
+            ))}
+          </div>
+        </section>
+
+        <section className="admin-section">
+          <h2>Personnalisation — Animations</h2>
+          <div className="admin-grid">
+            {SPEED_FIELDS.map(({ key, label, min, max, step }) => (
+              <label className="admin-field admin-field-wide" key={key}>
+                <span>{label} — {settings[key]}s</span>
+                <input
+                  type="range"
+                  min={min}
+                  max={max}
+                  step={step}
+                  value={settings[key] ?? min}
+                  onChange={(e) => update(key, parseFloat(e.target.value))}
+                />
+              </label>
+            ))}
+          </div>
+        </section>
+
         <section className="admin-section">
           <h2>Le couple</h2>
           <div className="admin-grid">
