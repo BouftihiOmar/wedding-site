@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from 'react'
 import { supabase } from './supabaseClient'
+import ThemeInjector from './ThemeInjector'
 import './app.css'
 
 const MONTHS_FR = [
@@ -263,6 +264,10 @@ export default function App() {
 
   return (
     <div className="page">
+
+      {/* Applique les couleurs et vitesses d'animation
+          choisies dans l'admin, en live */}
+      <ThemeInjector settings={settings} />
 
       {/* ==================================================
           GRAND PORTAIL
