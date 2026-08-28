@@ -10,8 +10,6 @@ const COLOR_MAP = {
   color_gold_light: '--color-gold-light',
   color_emerald: '--color-emerald',
   color_clay: '--color-clay',
-  color_door_dark: '--color-door-dark',
-  color_door_light: '--color-door-light',
 }
 
 const SPEED_MAP = {
@@ -26,14 +24,12 @@ export default function ThemeInjector({ settings }) {
 
     const root = document.documentElement
 
-    // 1. Appliquer les couleurs si elles existent
     Object.entries(COLOR_MAP).forEach(([field, cssVar]) => {
       if (settings[field]) {
         root.style.setProperty(cssVar, settings[field])
       }
     })
 
-    // 2. Appliquer les vitesses (Vérification pour éviter 0 ou vide)
     Object.entries(SPEED_MAP).forEach(([field, cssVar]) => {
       const val = settings[field]
       if (val !== undefined && val !== null && val !== '' && Number(val) > 0) {
