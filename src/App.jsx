@@ -20,7 +20,7 @@ function formatTime(timeStr) {
 }
 
 // ======================================================
-// SCROLL REVEAL
+// SCROLL REVEAL COMPONENT
 // ======================================================
 
 function Reveal({ children, className = '' }) {
@@ -65,7 +65,7 @@ function Reveal({ children, className = '' }) {
 }
 
 // ======================================================
-// ZELLIGE
+// ZELLIGE SVG ICON
 // ======================================================
 
 function ZelligeMark() {
@@ -79,7 +79,7 @@ function ZelligeMark() {
       <path
         d="M12 2 L14.2 9.8 L22 12 L14.2 14.2 L12 22 L9.8 14.2 L2 12 L9.8 9.8 Z"
         stroke="currentColor"
-        strokeWidth="1"
+        strokeWidth="1.2"
         strokeLinejoin="round"
       />
     </svg>
@@ -97,7 +97,7 @@ function Divider() {
 }
 
 // ======================================================
-// COUNTDOWN
+// COUNTDOWN HOOK
 // ======================================================
 
 function useCountdown(targetDate, targetTime) {
@@ -126,22 +126,14 @@ function useCountdown(targetDate, targetTime) {
       }
 
       setLeft({
-        days: Math.floor(
-          diff / (1000 * 60 * 60 * 24)
-        ),
-        hours: Math.floor(
-          (diff / (1000 * 60 * 60)) % 24
-        ),
-        minutes: Math.floor(
-          (diff / (1000 * 60)) % 60
-        ),
+        days: Math.floor(diff / (1000 * 60 * 60 * 24)),
+        hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
+        minutes: Math.floor((diff / (1000 * 60)) % 60),
       })
     }
 
     tick()
-
     const id = setInterval(tick, 60 * 1000)
-
     return () => clearInterval(id)
   }, [targetDate, targetTime])
 
@@ -149,7 +141,7 @@ function useCountdown(targetDate, targetTime) {
 }
 
 // ======================================================
-// MAIN APP
+// MAIN APP COMPONENT
 // ======================================================
 
 export default function App() {
@@ -157,20 +149,11 @@ export default function App() {
   const [schedule, setSchedule] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-
-  // الباب
   const [gateOpen, setGateOpen] = useState(false)
-
-  // ====================================================
-  // LOAD DATA
-  // ====================================================
 
   useEffect(() => {
     async function load() {
-      const {
-        data: settingsData,
-        error: settingsError,
-      } = await supabase
+      const { data: settingsData, error: settingsError } = await supabase
         .from('wedding_settings')
         .select('*')
         .limit(1)
@@ -183,15 +166,11 @@ export default function App() {
       }
 
       if (settingsData) {
-        const {
-          data: scheduleData,
-        } = await supabase
+        const { data: scheduleData } = await supabase
           .from('wedding_schedule')
           .select('*')
           .eq('wedding_id', settingsData.id)
-          .order('order_index', {
-            ascending: true,
-          })
+          .order('order_index', { ascending: true })
 
         setSchedule(scheduleData || [])
       }
@@ -208,36 +187,21 @@ export default function App() {
     settings?.wedding_time
   )
 
-  // ====================================================
-  // OPEN GATE
-  // ====================================================
-
   const openGate = () => {
     setGateOpen(true)
-
-    // نخلي scroll مقفول أثناء animation
     document.body.classList.add('gate-opening')
-
     setTimeout(() => {
       document.body.classList.remove('gate-opening')
     }, 1800)
   }
 
-  // ====================================================
-  // LOADING
-  // ====================================================
-
   if (loading) {
     return (
       <div className="loading">
-        Un instant, l'invitation se prépare&nbsp;…
+        Un instant, l'invitation se prépare…
       </div>
     )
   }
-
-  // ====================================================
-  // ERROR
-  // ====================================================
 
   if (error) {
     return (
@@ -249,106 +213,52 @@ export default function App() {
     )
   }
 
-  // ====================================================
-  // NO WEDDING
-  // ====================================================
-
   if (!settings) {
     return (
       <div className="empty-state">
-        Aucune information de mariage trouvée
-        pour le moment.
+        Aucune information de mariage trouvée pour le moment.
       </div>
     )
   }
 
   return (
     <div className="page">
-
-      {/* Applique les couleurs et vitesses d'animation
-          choisies dans l'admin, en live */}
       <ThemeInjector settings={settings} />
 
       {/* ==================================================
-          GRAND PORTAIL
+          PORTAIL MAROCAIN (GATE)
           ================================================== */}
-
-      <div
-        className={`wedding-gate ${
-          gateOpen ? 'gate-is-open' : ''
-        }`}
-      >
-
-        {/* الخلفية */}
+      <div className={`wedding-gate ${gateOpen ? 'gate-is-open' : ''}`}>
         <div className="gate-background">
           <div className="gate-glow" />
           <div className="gate-sparkles">
-  <span /><span /><span /><span /><span /><span />
-</div>
-        </div>
-
-        {/* عمودين مزخرفين على الجنبين */}
-        <div className="gate-column left" />
-        <div className="gate-column right" />
-
-        {/* الباب اليسر */}
-        <div className="gate-door gate-left">
-
-          <div className="gate-pattern" />
-          <div className="gate-filigree" />
-
-          <div className="gate-arch" />
-
-          <div className="gate-decoration top">
-            <ZelligeMark />
-          </div>
-
-          <div className="gate-decoration bottom">
-            <ZelligeMark />
-          </div>
-
-          <div className="gate-name">
-            {settings.groom_name?.[0] || '✦'}
-          </div>
-
-        </div>
-
-        {/* الباب الأيمن */}
-        <div className="gate-door gate-right">
-
-          <div className="gate-pattern" />
-          <div className="gate-filigree" />
-
-          <div className="gate-arch" />
-
-          <div className="gate-decoration top">
-            <ZelligeMark />
-          </div>
-
-          <div className="gate-decoration bottom">
-            <ZelligeMark />
-          </div>
-
-          <div className="gate-name">
-            {settings.bride_name?.[0] || '✦'}
-          </div>
-
-        </div>
-
-        {/* اللوحة المزخرفة فوق الباب (بحال القوس المنقوش) */}
-        <div className="gate-motif-panel">
-          <div className="gate-filigree" />
-          <div className="gate-motif-star">
-            <ZelligeMark />
+            <span /><span /><span /><span /><span /><span />
           </div>
         </div>
 
-        {/* الأرضية العاكسة */}
-        <div className="gate-floor" />
+        {/* إطار الباب والأبواب */}
+        <div className="gate-frame">
+          {/* الباب الأيسر */}
+          <div className="gate-door gate-left">
+            <div className="gate-pattern" />
+            <div className="gate-door-inner-arch" />
+            <div className="gate-decoration top"><ZelligeMark /></div>
+            <div className="gate-decoration bottom"><ZelligeMark /></div>
+            <div className="door-handle" />
+          </div>
 
-        {/* المحتوى فوق الباب */}
+          {/* الباب الأيمن */}
+          <div className="gate-door gate-right">
+            <div className="gate-pattern" />
+            <div className="gate-door-inner-arch" />
+            <div className="gate-decoration top"><ZelligeMark /></div>
+            <div className="gate-decoration bottom"><ZelligeMark /></div>
+            <div className="door-handle" />
+          </div>
+        </div>
+
+        {/* النص والزر الظاهر في الواجهة فوق الباب */}
         <div className="gate-content">
-
           <div className="gate-small">
             Invitation de mariage
           </div>
@@ -377,33 +287,23 @@ export default function App() {
             <span className="button-icon">
               <ZelligeMark />
             </span>
-
-            <span>
-              Ouvrir l'invitation
-            </span>
-
-            <span className="button-arrow">
-              ↓
-            </span>
+            <span>Ouvrir l'invitation</span>
+            <span className="button-arrow">↓</span>
           </button>
 
           <div className="gate-hint">
             Touchez pour entrer
           </div>
-
         </div>
 
-        {/* lumière أثناء الفتح */}
+        {/* الضوء الأبيض الذي يظهر عند فتح الباب */}
         <div className="gate-light" />
-
       </div>
 
       {/* ==================================================
-          HERO
+          HERO SECTION
           ================================================== */}
-
       <section className="hero">
-
         <div className="eyebrow">
           Nous nous marions
         </div>
@@ -431,143 +331,70 @@ export default function App() {
 
         {countdown && (
           <div className="countdown">
-
             <div className="unit">
-              <div className="value">
-                {countdown.days}
-              </div>
-
-              <div className="label">
-                jours
-              </div>
+              <div className="value">{countdown.days}</div>
+              <div className="label">jours</div>
             </div>
-
             <div className="unit">
-              <div className="value">
-                {countdown.hours}
-              </div>
-
-              <div className="label">
-                heures
-              </div>
+              <div className="value">{countdown.hours}</div>
+              <div className="label">heures</div>
             </div>
-
             <div className="unit">
-              <div className="value">
-                {countdown.minutes}
-              </div>
-
-              <div className="label">
-                minutes
-              </div>
+              <div className="value">{countdown.minutes}</div>
+              <div className="label">minutes</div>
             </div>
-
           </div>
         )}
-
       </section>
 
       <Divider />
 
       {/* ==================================================
-          MESSAGE
+          MESSAGE SECTION
           ================================================== */}
-
-      {(settings.invitation_message ||
-        settings.couple_description) && (
-
+      {(settings.invitation_message || settings.couple_description) && (
         <Reveal>
-
           <section className="section">
-
-            <p
-              className="quote"
-              style={{
-                margin: '0 auto',
-                maxWidth: 480,
-              }}
-            >
-              {settings.invitation_message ||
-                settings.couple_description}
+            <p className="quote" style={{ margin: '0 auto', maxWidth: 480 }}>
+              {settings.invitation_message || settings.couple_description}
             </p>
-
           </section>
-
         </Reveal>
       )}
 
       <Divider />
 
       {/* ==================================================
-          DÉTAILS
+          DETAILS SECTION
           ================================================== */}
-
       <Reveal>
-
         <section className="section">
-
-          <h2 className="heading">
-            Le grand jour
-          </h2>
-
-          <p className="subheading">
-            Retrouvez-nous pour célébrer ensemble
-          </p>
+          <h2 className="heading">Le grand jour</h2>
+          <p className="subheading">Retrouvez-nous pour célébrer ensemble</p>
 
           <div className="details-grid">
-
             {/* DATE */}
-
             <div className="detail-card">
-
-              <div className="label">
-                Date &amp; heure
-              </div>
-
-              <div className="value">
-                {formatDate(settings.wedding_date)}
-              </div>
-
+              <div className="label">Date &amp; heure</div>
+              <div className="value">{formatDate(settings.wedding_date)}</div>
               {settings.wedding_time && (
-                <div className="sub">
-                  à {formatTime(settings.wedding_time)}
-                </div>
+                <div className="sub">à {formatTime(settings.wedding_time)}</div>
               )}
-
             </div>
 
             {/* LIEU */}
-
             {settings.venue_name && (
-
               <div className="detail-card">
-
-                <div className="label">
-                  Lieu
-                </div>
-
-                <div className="value">
-                  {settings.venue_name}
-                </div>
-
-                {(settings.address ||
-                  settings.city) && (
-
+                <div className="label">Lieu</div>
+                <div className="value">{settings.venue_name}</div>
+                {(settings.address || settings.city) && (
                   <div className="sub">
-
-                    {[
-                      settings.address,
-                      settings.city,
-                      settings.country,
-                    ]
+                    {[settings.address, settings.city, settings.country]
                       .filter(Boolean)
                       .join(', ')}
-
                   </div>
                 )}
-
                 {settings.maps_url && (
-
                   <a
                     className="maps-link"
                     href={settings.maps_url}
@@ -576,99 +403,49 @@ export default function App() {
                   >
                     Voir sur la carte
                   </a>
-
                 )}
-
               </div>
             )}
 
             {/* DRESS CODE */}
-
             {settings.dress_code && (
-
               <div className="detail-card">
-
-                <div className="label">
-                  Dress code
-                </div>
-
-                <div className="value">
-                  {settings.dress_code}
-                </div>
-
+                <div className="label">Dress code</div>
+                <div className="value">{settings.dress_code}</div>
               </div>
-
             )}
-
           </div>
-
         </section>
-
       </Reveal>
 
       {/* ==================================================
-          PROGRAMME
+          PROGRAMME SECTION
           ================================================== */}
-
       {schedule.length > 0 && (
-
         <>
           <Divider />
-
           <Reveal>
-
             <section className="section">
-
-              <h2 className="heading">
-                Le déroulé
-              </h2>
-
-              <p className="subheading">
-                Une journée à vivre ensemble
-              </p>
+              <h2 className="heading">Le déroulé</h2>
+              <p className="subheading">Une journée à vivre ensemble</p>
 
               <div className="timeline">
-
                 {schedule.map((item) => (
-
-                  <div
-                    className="timeline-item"
-                    key={item.id}
-                  >
-
-                    <div className="time">
-                      {formatTime(item.time)}
-                    </div>
-
+                  <div className="timeline-item" key={item.id}>
+                    <div className="time">{formatTime(item.time)}</div>
                     <div className="rail" />
-
                     <div>
-
-                      <p className="title">
-                        {item.title}
-                      </p>
-
+                      <p className="title">{item.title}</p>
                       {item.description && (
-
-                        <p className="desc">
-                          {item.description}
-                        </p>
-
+                        <p className="desc">{item.description}</p>
                       )}
-
                     </div>
-
                   </div>
-
                 ))}
-
               </div>
-
             </section>
-
           </Reveal>
         </>
-
       )}
 
       <Divider />
@@ -676,25 +453,16 @@ export default function App() {
       {/* ==================================================
           FOOTER
           ================================================== */}
-
       <Reveal>
-
         <footer className="footer">
-
           <p className="signoff">
-            {settings.final_message ||
-              'Avec amour, à très bientôt.'}
+            {settings.final_message || 'Avec amour, à très bientôt.'}
           </p>
-
           <p className="small">
-            {settings.footer_text ||
-              `${settings.groom_name} & ${settings.bride_name}`}
+            {settings.footer_text || `${settings.groom_name} & ${settings.bride_name}`}
           </p>
-
         </footer>
-
       </Reveal>
-
     </div>
   )
 }
