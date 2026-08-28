@@ -765,4 +765,976 @@ button { font-family: inherit; }
     scroll-behavior: auto !important;
     transition-duration: .01ms !important;
   }
+/* =========================================================
+   LUXURY MOROCCAN WEDDING GATE
+   ========================================================= */
+
+body.gate-lock {
+  overflow: hidden;
+  height: 100vh;
+}
+
+/* ---------------------------------------------------------
+   MAIN GATE
+   --------------------------------------------------------- */
+
+.wedding-gate {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+
+  width: 100%;
+  height: 100dvh;
+
+  overflow: hidden;
+
+  background:
+    radial-gradient(
+      circle at 50% 48%,
+      rgba(184, 147, 90, 0.12),
+      transparent 30%
+    ),
+    #10130f;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  opacity: 1;
+
+  transition:
+    opacity 1.2s ease,
+    visibility 1.2s ease;
+}
+
+.wedding-gate.gate-is-open {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* ---------------------------------------------------------
+   BACKGROUND
+   --------------------------------------------------------- */
+
+.gate-background {
+  position: absolute;
+  inset: 0;
+
+  background:
+    radial-gradient(
+      ellipse at center,
+      rgba(184, 147, 90, 0.16),
+      transparent 35%
+    ),
+    radial-gradient(
+      ellipse at 50% 100%,
+      rgba(31, 61, 43, 0.55),
+      transparent 55%
+    ),
+    linear-gradient(
+      135deg,
+      #080b08,
+      #19160f 45%,
+      #0c110d
+    );
+
+  z-index: -3;
+}
+
+/* ---------------------------------------------------------
+   LIGHT BEHIND THE DOOR
+   --------------------------------------------------------- */
+
+.gate-light {
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  width: min(58vw, 620px);
+  height: min(82vh, 900px);
+
+  transform: translate(-50%, -50%);
+
+  overflow: hidden;
+
+  background:
+    radial-gradient(
+      ellipse at center,
+      rgba(255, 226, 163, 0.9),
+      rgba(184, 147, 90, 0.32) 35%,
+      rgba(20, 30, 21, 0.92) 75%
+    );
+
+  box-shadow:
+    0 0 100px rgba(214, 171, 91, 0.22),
+    inset 0 0 80px rgba(255, 219, 155, 0.25);
+
+  opacity: 0.95;
+}
+
+/* glow */
+
+.gate-light-glow {
+  position: absolute;
+  inset: -30%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(255, 229, 170, 0.45),
+      transparent 55%
+    );
+
+  animation: gateLightPulse 5s ease-in-out infinite;
+}
+
+/* ---------------------------------------------------------
+   NAMES BEHIND DOOR
+   --------------------------------------------------------- */
+
+.gate-hidden-content {
+  position: absolute;
+  inset: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+
+  color: #fff4dc;
+
+  padding: 30px;
+
+  text-shadow:
+    0 2px 20px rgba(0, 0, 0, 0.5);
+}
+
+.gate-hidden-eyebrow {
+  font-family: var(--font-body);
+
+  font-size: 10px;
+
+  letter-spacing: 0.35em;
+
+  text-transform: uppercase;
+
+  margin-bottom: 25px;
+}
+
+.gate-hidden-initials {
+  font-family: var(--font-display);
+
+  font-size: clamp(70px, 13vw, 130px);
+
+  line-height: 1;
+
+  color: #fff0c9;
+}
+
+.gate-hidden-names {
+  display: flex;
+  gap: 12px;
+
+  align-items: center;
+
+  margin-top: 25px;
+
+  font-family: var(--font-script);
+
+  font-size: clamp(25px, 4vw, 40px);
+
+  font-style: italic;
+}
+
+.gate-hidden-names span {
+  font-family: var(--font-body);
+
+  font-size: 14px;
+
+  color: #d8bd8f;
+}
+
+.gate-hidden-date {
+  margin-top: 25px;
+
+  font-family: var(--font-body);
+
+  font-size: 10px;
+
+  letter-spacing: 0.2em;
+
+  text-transform: uppercase;
+
+  color: #ead9bc;
+}
+
+/* ---------------------------------------------------------
+   ARCHITECTURE
+   --------------------------------------------------------- */
+
+.gate-architecture {
+  position: relative;
+
+  width: min(90vw, 700px);
+  height: min(94vh, 940px);
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  flex-direction: column;
+}
+
+/* Outer arch */
+
+.gate-outer-arch {
+  position: relative;
+
+  width: min(58vw, 620px);
+  height: min(82vh, 900px);
+
+  padding: 16px;
+
+  border-radius:
+    320px 320px 30px 30px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #5d4525,
+      #c39a55 12%,
+      #5b401f 25%,
+      #8c6733 50%,
+      #3b2a18 75%,
+      #a47a3d
+    );
+
+  box-shadow:
+    0 25px 80px rgba(0,0,0,.65),
+    inset 0 0 0 2px rgba(255,222,157,.35),
+    inset 0 0 30px rgba(0,0,0,.55);
+
+  overflow: hidden;
+}
+
+/* Inner frame */
+
+.gate-inner-arch {
+  position: relative;
+
+  width: 100%;
+  height: 100%;
+
+  border-radius:
+    305px 305px 18px 18px;
+
+  overflow: hidden;
+
+  border:
+    2px solid rgba(222,184,111,.75);
+
+  background:
+    linear-gradient(
+      90deg,
+      #6e4b24,
+      #3a2614 20%,
+      #21170d 50%,
+      #3a2614 80%,
+      #6e4b24
+    );
+
+  box-shadow:
+    inset 0 0 45px rgba(0,0,0,.75);
+}
+
+/* ---------------------------------------------------------
+   DOOR
+   --------------------------------------------------------- */
+
+.gate-door {
+  position: absolute;
+
+  top: 0;
+  bottom: 0;
+
+  width: 50%;
+
+  z-index: 10;
+
+  overflow: hidden;
+
+  transition:
+    transform 2s cubic-bezier(.77,0,.175,1);
+
+  will-change: transform;
+}
+
+/* LEFT */
+
+.gate-door-left {
+  left: 0;
+
+  transform-origin: left center;
+}
+
+/* RIGHT */
+
+.gate-door-right {
+  right: 0;
+
+  transform-origin: right center;
+}
+
+/* OPEN */
+
+.gate-is-open .gate-door-left {
+  transform:
+    translateX(-100%)
+    rotateY(-8deg);
+}
+
+.gate-is-open .gate-door-right {
+  transform:
+    translateX(100%)
+    rotateY(8deg);
+}
+
+/* ---------------------------------------------------------
+   WOOD SURFACE
+   --------------------------------------------------------- */
+
+.door-surface {
+  position: absolute;
+  inset: 0;
+
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255,255,255,.025) 0,
+      rgba(255,255,255,.025) 2px,
+      transparent 2px,
+      transparent 8px
+    ),
+    linear-gradient(
+      90deg,
+      #21140b,
+      #65421f 18%,
+      #392311 50%,
+      #65421f 82%,
+      #1d1209
+    );
+
+  box-shadow:
+    inset 0 0 45px rgba(0,0,0,.75);
+}
+
+/* ---------------------------------------------------------
+   GOLD BORDERS
+   --------------------------------------------------------- */
+
+.door-border {
+  position: absolute;
+
+  pointer-events: none;
+
+  border: 1px solid rgba(211,170,96,.65);
+}
+
+.door-border.outer {
+  inset: 12px;
+}
+
+.door-border.inner {
+  inset: 25px;
+
+  border-color:
+    rgba(211,170,96,.35);
+}
+
+/* ---------------------------------------------------------
+   ZELLIGE / CARVING
+   --------------------------------------------------------- */
+
+.door-zellige {
+  position: absolute;
+
+  inset: 40px 25px;
+
+  border:
+    1px solid rgba(214,174,100,.32);
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;
+
+  background:
+    repeating-linear-gradient(
+      45deg,
+      transparent 0,
+      transparent 13px,
+      rgba(214,174,100,.045) 14px,
+      transparent 15px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      transparent 0,
+      transparent 13px,
+      rgba(214,174,100,.045) 14px,
+      transparent 15px
+    );
+}
+
+/* central medallion */
+
+.door-medallion {
+  width: 125px;
+  height: 125px;
+
+  border-radius: 50%;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  position: relative;
+
+  background:
+    radial-gradient(
+      circle,
+      #765323,
+      #3d2813 65%,
+      #211409
+    );
+
+  border:
+    2px solid rgba(214,174,100,.75);
+
+  box-shadow:
+    0 0 0 7px rgba(214,174,100,.08),
+    inset 0 0 25px rgba(0,0,0,.75),
+    0 0 30px rgba(214,174,100,.12);
+}
+
+.medallion-star {
+  font-size: 13px;
+
+  color: #e4bd76;
+
+  margin-bottom: 8px;
+}
+
+.door-monogram {
+  font-family: var(--font-display);
+
+  font-size: 25px;
+
+  color: #f3d28f;
+
+  letter-spacing: .08em;
+}
+
+.medallion-line {
+  width: 28px;
+
+  height: 1px;
+
+  margin-top: 9px;
+
+  background: #cda665;
+}
+
+/* ---------------------------------------------------------
+   DECORATIVE CARVING
+   --------------------------------------------------------- */
+
+.door-carving {
+  position: absolute;
+
+  left: 0;
+  right: 0;
+
+  text-align: center;
+
+  color: rgba(220,181,105,.55);
+
+  font-size: 17px;
+
+  letter-spacing: 12px;
+}
+
+.door-carving.top {
+  top: 18%;
+}
+
+.door-carving.bottom {
+  bottom: 18%;
+}
+
+/* ---------------------------------------------------------
+   HANDLES
+   --------------------------------------------------------- */
+
+.door-handle {
+  position: absolute;
+
+  top: 50%;
+
+  width: 18px;
+  height: 48px;
+
+  transform: translateY(-50%);
+
+  border:
+    2px solid #d1a65b;
+
+  background:
+    linear-gradient(
+      180deg,
+      #e4bd76,
+      #72501f
+    );
+
+  box-shadow:
+    0 3px 10px rgba(0,0,0,.5);
+}
+
+.gate-door-left .door-handle {
+  right: 13px;
+}
+
+.gate-door-right .door-handle {
+  left: 13px;
+}
+
+.door-handle span {
+  position: absolute;
+
+  width: 6px;
+  height: 6px;
+
+  left: 50%;
+  top: 50%;
+
+  transform: translate(-50%,-50%);
+
+  border-radius: 50%;
+
+  background: #f1d28f;
+}
+
+/* ---------------------------------------------------------
+   ARCH ORNAMENT
+   --------------------------------------------------------- */
+
+.gate-arch-ornament {
+  position: absolute;
+
+  z-index: 20;
+
+  left: 5%;
+  right: 5%;
+
+  top: 3%;
+
+  height: 22%;
+
+  pointer-events: none;
+}
+
+.arch-pattern {
+  position: absolute;
+
+  inset: 0;
+
+  opacity: .8;
+
+  background:
+    repeating-linear-gradient(
+      45deg,
+      transparent 0,
+      transparent 17px,
+      rgba(220,181,105,.25) 18px,
+      transparent 19px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      transparent 0,
+      transparent 17px,
+      rgba(220,181,105,.25) 18px,
+      transparent 19px
+    );
+
+  mask-image:
+    radial-gradient(
+      ellipse,
+      black 10%,
+      transparent 70%
+    );
+
+  -webkit-mask-image:
+    radial-gradient(
+      ellipse,
+      black 10%,
+      transparent 70%
+    );
+}
+
+.arch-star {
+  position: absolute;
+
+  color: #e0b96d;
+
+  font-size: 18px;
+
+  text-shadow:
+    0 0 12px rgba(230,190,100,.5);
+}
+
+.arch-star-left {
+  left: 5%;
+  top: 50%;
+}
+
+.arch-star-right {
+  right: 5%;
+  top: 50%;
+}
+
+/* ---------------------------------------------------------
+   OPEN BUTTON
+   --------------------------------------------------------- */
+
+.gate-open-button {
+  position: absolute;
+
+  bottom: 25px;
+
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  z-index: 50;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 16px;
+
+  min-width: 270px;
+
+  padding: 17px 25px;
+
+  border-radius: 999px;
+
+  border:
+    1px solid rgba(222,184,111,.8);
+
+  background:
+    rgba(30,22,13,.78);
+
+  backdrop-filter: blur(12px);
+
+  color: #f0d49b;
+
+  font-family: var(--font-body);
+
+  font-size: 11px;
+
+  font-weight: 500;
+
+  letter-spacing: .16em;
+
+  text-transform: uppercase;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 12px 40px rgba(0,0,0,.4),
+    inset 0 0 20px rgba(220,180,100,.04);
+
+  transition:
+    transform .35s ease,
+    background .35s ease,
+    box-shadow .35s ease;
+}
+
+.gate-open-button:hover {
+  transform:
+    translateX(-50%)
+    translateY(-4px);
+
+  background:
+    rgba(60,43,23,.9);
+
+  box-shadow:
+    0 18px 50px rgba(0,0,0,.5),
+    0 0 30px rgba(220,180,100,.12);
+}
+
+.gate-open-button:active {
+  transform:
+    translateX(-50%)
+    scale(.97);
+}
+
+.button-star {
+  font-size: 12px;
+}
+
+.button-arrow {
+  font-size: 18px;
+
+  line-height: 1;
+
+  animation:
+    arrowFloat 1.8s ease-in-out infinite;
+}
+
+/* ---------------------------------------------------------
+   BOTTOM DECORATION
+   --------------------------------------------------------- */
+
+.gate-bottom-decoration {
+  position: absolute;
+
+  bottom: 12px;
+
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  width: min(70vw, 500px);
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 15px;
+
+  color: rgba(210,170,100,.65);
+}
+
+.gate-bottom-decoration span {
+  flex: 1;
+
+  height: 1px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(210,170,100,.55),
+      transparent
+    );
+}
+
+.gate-bottom-decoration svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* ---------------------------------------------------------
+   MAIN CONTENT AFTER OPEN
+   --------------------------------------------------------- */
+
+.invitation-content {
+  opacity: 0;
+
+  transform: translateY(25px);
+
+  transition:
+    opacity 1.2s ease .45s,
+    transform 1.2s cubic-bezier(.22,1,.36,1) .45s;
+}
+
+.invitation-content.invitation-visible {
+  opacity: 1;
+
+  transform: translateY(0);
+}
+
+/* ---------------------------------------------------------
+   ANIMATIONS
+   --------------------------------------------------------- */
+
+@keyframes gateLightPulse {
+  0%,
+  100% {
+    transform: scale(.96);
+    opacity: .7;
+  }
+
+  50% {
+    transform: scale(1.04);
+    opacity: 1;
+  }
+}
+
+@keyframes arrowFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(4px);
+  }
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+  .gate-architecture {
+    width: 100vw;
+    height: 94dvh;
+  }
+
+  .gate-outer-arch {
+    width: 88vw;
+    height: 78dvh;
+
+    padding: 10px;
+
+    border-radius:
+      46vw 46vw 22px 22px;
+  }
+
+  .gate-inner-arch {
+    border-radius:
+      42vw 42vw 14px 14px;
+  }
+
+  .gate-light {
+    width: 88vw;
+    height: 78dvh;
+  }
+
+  .door-border.outer {
+    inset: 8px;
+  }
+
+  .door-border.inner {
+    inset: 17px;
+  }
+
+  .door-zellige {
+    inset: 28px 16px;
+  }
+
+  .door-medallion {
+    width: 82px;
+    height: 82px;
+  }
+
+  .door-monogram {
+    font-size: 17px;
+  }
+
+  .medallion-star {
+    font-size: 9px;
+    margin-bottom: 3px;
+  }
+
+  .medallion-line {
+    width: 20px;
+    margin-top: 5px;
+  }
+
+  .door-carving {
+    font-size: 10px;
+    letter-spacing: 5px;
+  }
+
+  .gate-hidden-eyebrow {
+    font-size: 8px;
+  }
+
+  .gate-hidden-initials {
+    font-size: 70px;
+  }
+
+  .gate-hidden-names {
+    font-size: 23px;
+  }
+
+  .gate-hidden-date {
+    font-size: 8px;
+  }
+
+  .gate-open-button {
+    bottom: 24px;
+
+    min-width: 250px;
+
+    padding: 15px 20px;
+
+    font-size: 9px;
+
+    gap: 12px;
+  }
+
+  .gate-bottom-decoration {
+    bottom: 8px;
+  }
+}
+
+/* =========================================================
+   SMALL PHONES
+   ========================================================= */
+
+@media (max-width: 380px) {
+
+  .gate-outer-arch {
+    width: 91vw;
+    height: 76dvh;
+  }
+
+  .gate-light {
+    width: 91vw;
+    height: 76dvh;
+  }
+
+  .gate-open-button {
+    min-width: 225px;
+
+    padding: 14px 16px;
+
+    letter-spacing: .11em;
+  }
+}
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .gate-door,
+  .wedding-gate,
+  .invitation-content {
+    transition-duration: .01ms !important;
+  }
+
+  .gate-light-glow,
+  .button-arrow {
+    animation: none !important;
+  }
+}
 }
