@@ -1,83 +1,66 @@
 import { useState } from 'react'
 import './WeddingGate.css'
 
-export default function WeddingGate({ groomName, brideName, initials, date }) {
+export default function WeddingGate({ groomName, brideName, date }) {
   const [isOpen, setIsOpen] = useState(false)
 
+  // رابط الصورة الأندلسية الفاخرة ذات الجودة العالية
+  const gateImageUrl = "https://images.unsplash.com/photo-1548013146-72479768bada?q=80&w=1000&auto=format&fit=crop"
+
   return (
-    <div className={`gate-overlay ${isOpen ? 'open' : 'closed'}`}>
-      <div className="royal-palace-frame">
+    <div className={`gate-overlay ${isOpen ? 'open' : ''}`}>
+      <div className="real-arch-wrapper">
         
-        {/* التاج القوسي أعلى الباب الأندلسي */}
-        <div className="arch-carving-top">
-          <svg className="arch-pattern-svg" viewBox="0 0 200 100" preserveAspectRatio="none">
-            <path 
-              d="M0,100 Q100,-20 200,100 Z" 
-              fill="none" 
-              stroke="#d4af37" 
-              strokeWidth="2" 
-            />
-            <path 
-              d="M20,100 Q100,0 180,100 Z" 
-              fill="none" 
-              stroke="#8a6d2b" 
-              strokeWidth="1.5" 
-              strokeDasharray="4 2" 
-            />
-          </svg>
-        </div>
+        {/* خلفية الباب والأعمدة الرخامية */}
+        <img src={gateImageUrl} alt="Moroccan Gate" className="real-gate-bg" />
+        <div className="gate-glow-overlay" />
 
-        {/* الأبواب الذهبية والمنقوشة */}
-        <div className="doors-container">
-          <div className="royal-door-left">
-            <div className="door-engraving" />
-            <div className="royal-handle-left" />
-          </div>
+        {/* الضلف المتحركة (شمال ويمين) */}
+        <div 
+          className="door-shutter-left" 
+          style={{ backgroundImage: `url(${gateImageUrl})` }} 
+        />
+        <div 
+          className="door-shutter-right" 
+          style={{ backgroundImage: `url(${gateImageUrl})` }} 
+        />
+
+        {/* الواجهة فـ الوسط (الشعار والكتابة والزر) */}
+        <div className="gate-ui-layer">
           
-          <div className="royal-door-right">
-            <div className="door-engraving" />
-            <div className="royal-handle-right" />
-          </div>
+          {/* الشعار الذهبي (Monogram) */}
+          <svg className="moroccan-monogram" viewBox="0 0 100 100" fill="none">
+            <path 
+              d="M50 5 C30 25 20 45 40 65 C50 75 60 80 50 95 C35 80 15 65 25 35 C30 25 45 15 50 5 Z" 
+              fill="url(#goldGradient)" 
+            />
+            <path 
+              d="M50 5 C70 25 80 45 60 65 C50 75 40 80 50 95 C65 80 85 65 75 35 C70 25 55 15 50 5 Z" 
+              fill="url(#goldGradient)" 
+              opacity="0.8" 
+            />
+            <defs>
+              <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#fff2cb" />
+                <stop offset="50%" stopColor="#d4af37" />
+                <stop offset="100%" stopColor="#99751e" />
+              </linearGradient>
+            </defs>
+          </svg>
 
-          {/* محتوى الشعار والنصوص والزر فـ الوسط */}
-          <div className="gate-content-layer">
-            
-            {/* الشعار الذهبي المتوهج (Calligraphy Arabic Symbol SVG) */}
-            <div className="glowing-monogram">
-              <svg width="75" height="75" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path 
-                  d="M50 10 C30 30 25 50 45 65 C55 72 65 78 50 90 C35 75 20 60 30 35 C35 28 45 20 50 10 Z" 
-                  fill="url(#goldGrad)" 
-                />
-                <path 
-                  d="M55 20 C70 35 75 55 60 70 C50 80 40 85 55 95 C70 80 85 65 75 40 C70 30 60 22 55 20 Z" 
-                  fill="url(#goldGrad)" 
-                  opacity="0.85" 
-                />
-                <defs>
-                  <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#fff3cc" />
-                    <stop offset="50%" stopColor="#d4af37" />
-                    <stop offset="100%" stopColor="#aa7c11" />
-                  </linearGradient>
-                </defs>
-              </svg>
-            </div>
+          <span className="gate-invitation-title">INVITATION</span>
+          
+          <h2 className="gate-couple-names">
+            {groomName || 'Ghazi'} &amp; {brideName || 'Nadia'}
+          </h2>
+          
+          <p className="gate-event-date">{date || '12 DÉCEMBRE 2026'}</p>
 
-            <span className="royal-subtitle">INVITATION DE MARIAGE</span>
-            
-            <h2 className="royal-names">
-              {groomName || 'Ghazi'} &amp; {brideName || 'Nadia'}
-            </h2>
-            
-            <p className="royal-date">{date || '12 DÉCEMBRE 2026'}</p>
-
-            <button className="royal-open-btn" onClick={() => setIsOpen(true)}>
-              OUVRIR L'INVITATION
-            </button>
-          </div>
-
+          <button className="gate-action-btn" onClick={() => setIsOpen(true)}>
+            OUVRIR L'INVITATION
+          </button>
         </div>
+
       </div>
     </div>
   )
