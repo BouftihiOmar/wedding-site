@@ -1,7 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Jost:wght@300;400;500&family=Marcellus&display=swap');
 
 :root {
-  /* Valeurs par défaut ila kanti ma-mdkhelhomch f Supabase */
   --color-bg: #f6e4b8;
   --color-bg-deep: #e9c983;
   --color-ink: #2b2116;
@@ -14,10 +13,8 @@
   --color-door-dark: #0a0704;
   --color-door-light: #171008;
 
-  /* Dynamique via ThemeInjector (ou fallback) */
-  --speed-door: 1.8s;
+  --speed-door: 1.6s;
   --speed-reveal: 1s;
-  --speed-glow: 4s;
 
   --font-display: 'Marcellus', serif;
   --font-script: 'Cormorant Garamond', serif;
@@ -47,7 +44,7 @@ body.gate-opening { overflow: hidden; }
 }
 
 /* ==========================================
-   PORTAL / WEDDING GATE
+   WEDDING GATE OVERLAY
    ========================================== */
 
 .wedding-gate {
@@ -66,96 +63,105 @@ body.gate-opening { overflow: hidden; }
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(circle at center, rgba(199, 154, 75, 0.15) 0%, transparent 70%),
+    radial-gradient(circle at center, rgba(199, 154, 75, 0.2) 0%, transparent 75%),
     linear-gradient(180deg, var(--color-door-dark) 0%, var(--color-door-light) 50%, var(--color-door-dark) 100%);
   z-index: 1;
 }
 
+/* CONTAINER DIAL L-BAB */
 .gate-container {
   position: relative;
-  width: min(90vw, 440px);
-  height: min(82vh, 680px);
+  width: min(86vw, 410px);
+  height: min(78vh, 620px);
   z-index: 10;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
+/* ECHELLES / ARCH OUTLINE (القوس المغربي) */
 .gate-arch-border {
   position: absolute;
-  inset: 0;
-  border-radius: 220px 220px 12px 12px;
-  border: 2px solid var(--color-gold-soft);
-  box-shadow: 0 0 30px rgba(199, 154, 75, 0.25), inset 0 0 20px rgba(0, 0, 0, 0.8);
+  inset: -6px;
+  border-radius: 210px 210px 14px 14px;
+  border: 3px solid var(--color-gold);
+  box-shadow: 0 0 30px rgba(199, 154, 75, 0.35), inset 0 0 20px rgba(0, 0, 0, 0.9);
   pointer-events: none;
   z-index: 30;
 }
 
 .gate-doors-wrapper {
   position: absolute;
-  inset: 2px;
-  border-radius: 218px 218px 10px 10px;
+  inset: 0;
+  border-radius: 200px 200px 10px 10px;
   overflow: hidden;
   z-index: 15;
   display: flex;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85);
 }
 
+/* LES DEUX PORTES (تنسيق الخشب الواقعي) */
 .gate-door {
   position: relative;
   width: 50%;
   height: 100%;
-  background: linear-gradient(135deg, #1f150b, #332110 50%, #170f07);
-  /* Utilisation directe de la variable ThemeInjector avec fallback de sécurité */
-  transition: transform var(--speed-door, 1.8s) cubic-bezier(0.77, 0, 0.175, 1);
+  background: 
+    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.04) 0px, rgba(0, 0, 0, 0.04) 3px, transparent 3px, transparent 6px),
+    linear-gradient(145deg, #2a1a0e 0%, #462c17 50%, #190e06 100%);
+  transition: transform var(--speed-door) cubic-bezier(0.7, 0, 0.2, 1);
   display: flex;
   align-items: center;
+  box-shadow: inset 0 0 35px rgba(0, 0, 0, 0.9);
   will-change: transform;
 }
 
 .gate-left {
-  border-right: 1px solid var(--color-gold-soft);
+  border-right: 1.5px solid rgba(10, 7, 4, 0.9);
   transform-origin: left center;
 }
 
 .gate-right {
-  border-left: 1px solid var(--color-gold-soft);
+  border-left: 1.5px solid rgba(10, 7, 4, 0.9);
   transform-origin: right center;
 }
 
+/* النقوش والزخرفة بـ CSS */
 .door-pattern {
   position: absolute;
-  inset: 12px;
+  inset: 14px;
   border: 1px solid rgba(227, 195, 132, 0.25);
   border-radius: 180px 180px 6px 6px;
-  opacity: 0.3;
-  background-image: radial-gradient(var(--color-gold) 1px, transparent 0);
+  opacity: 0.35;
+  background-image: radial-gradient(var(--color-gold) 1.2px, transparent 0);
   background-size: 16px 16px;
 }
 
+/* المقبض النحاسي للباب */
 .door-handle {
   position: absolute;
-  top: 55%;
-  width: 10px;
-  height: 36px;
-  background: linear-gradient(180deg, var(--color-gold-light), var(--color-gold));
-  border-radius: 3px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.8);
+  top: 54%;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #ffe8b3, #c79a4b 60%, #5e4113);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.85);
 }
-.gate-left .door-handle { right: 6px; }
-.gate-right .door-handle { left: 6px; }
+.gate-left .door-handle { right: 10px; }
+.gate-right .door-handle { left: 10px; }
 
+/* CONTENT OVERLAY (النص والزر) */
 .gate-content {
   position: absolute;
   z-index: 40;
   width: 100%;
-  padding: 30px 20px;
+  padding: 25px 15px;
   text-align: center;
   color: #f8efe1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  transition: opacity 0.6s ease, transform 0.6s ease;
+  transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
 .gate-small {
@@ -163,51 +169,51 @@ body.gate-opening { overflow: hidden; }
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: var(--color-gold-light);
-  margin-bottom: 15px;
+  margin-bottom: 12px;
 }
 
 .gate-initials {
   font-family: var(--font-display);
-  font-size: clamp(54px, 13vw, 84px);
+  font-size: clamp(48px, 12vw, 76px);
   color: #f3d28f;
   line-height: 1;
-  text-shadow: 0 4px 20px rgba(0,0,0,0.9);
-  margin-bottom: 10px;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.9);
+  margin-bottom: 8px;
 }
 
 .gate-names {
   font-family: var(--font-script);
-  font-size: clamp(22px, 5vw, 32px);
+  font-size: clamp(20px, 4.5vw, 28px);
   font-style: italic;
   color: #ffffff;
-  text-shadow: 0 2px 10px rgba(0,0,0,0.9);
-  margin-bottom: 8px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
+  margin-bottom: 6px;
 }
-.gate-names span { color: var(--color-gold-soft); font-style: normal; margin: 0 6px; }
+.gate-names span { color: var(--color-gold-soft); font-style: normal; margin: 0 5px; }
 
 .gate-date {
-  font-size: 11px;
+  font-size: 10px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--color-gold-light);
-  margin-bottom: 25px;
+  margin-bottom: 20px;
 }
 
 .gate-open-button {
-  padding: 12px 26px;
+  padding: 11px 24px;
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   cursor: pointer;
   border: 1px solid var(--color-gold-soft);
   border-radius: 50px;
-  background: rgba(10, 7, 4, 0.85);
+  background: rgba(10, 7, 4, 0.88);
   color: #f9efdf;
   font-size: 10px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   backdrop-filter: blur(10px);
-  box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.7);
   transition: all 0.3s ease;
 }
 
@@ -217,12 +223,12 @@ body.gate-opening { overflow: hidden; }
   transform: translateY(-2px);
 }
 
+/* ANIMATION OPEN (فتح الباب) */
 .wedding-gate.gate-is-open {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  /* Délai synchro avec la vitesse de la porte */
-  transition-delay: calc(var(--speed-door, 1.8s) - 0.4s);
+  transition-delay: calc(var(--speed-door) - 0.4s);
 }
 
 .gate-is-open .gate-left {
@@ -239,7 +245,7 @@ body.gate-opening { overflow: hidden; }
 }
 
 /* ==========================================
-   HERO & CONTENT SECTION
+   HERO & PAGE CONTENT
    ========================================== */
 
 .hero {
